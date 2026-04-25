@@ -27,6 +27,10 @@ function StackLayout() {
 					name="modal"
 					options={{ title: "Modal", presentation: "modal" }}
 				/>
+				<Stack.Screen
+					name="transfer"
+					options={{ headerShown: false, presentation: "modal" }}
+				/>
 			</Stack.Protected>
 			<Stack.Protected guard={!session}>
 				<Stack.Screen name="signup" options={{ headerShown: false }} />

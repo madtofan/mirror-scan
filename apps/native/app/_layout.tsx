@@ -37,7 +37,6 @@ function SyncRetryHandler() {
 
 function StackLayout() {
 	const { session } = useOfflineSession();
-	console.log({ session });
 
 	return (
 		<Stack screenOptions={{}}>

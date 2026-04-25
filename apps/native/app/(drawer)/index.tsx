@@ -1,21 +1,22 @@
 import { Ionicons } from "@expo/vector-icons";
 import { router } from "expo-router";
 import { useSQLiteContext } from "expo-sqlite";
-import { Surface, useThemeColor } from "heroui-native";
+import { Surface, useThemeColor, useToast } from "heroui-native";
 import { useCallback, useEffect, useState } from "react";
 import { Text, TouchableOpacity, View } from "react-native";
 import { Container } from "@/components/container";
 import { getLatestEntry } from "@/lib/ledger";
+import { handleTopUpResponse } from "@/lib/sync";
+import { orpc } from "@/utils/orpc";
 
 function WalletPage() {
- 	const foregroundColor = useThemeColor("foreground");
- 	const mutedColor = useThemeColor("muted");
- 	const primaryColor = useThemeColor("primary");
+	const foregroundColor = useThemeColor("foreground");
+	const { toast } = useToast();
 
- 	const [balance, setBalance] = useState(0);
- 	const db = useSQLiteContext();
+	const [balance, setBalance] = useState(0);
+	const db = useSQLiteContext();
 
- 	useEffect(() => {
+	useEffect(() => {
 		const fetchBalance = async () => {
 			const entry = await getLatestEntry(db);
 			if (entry) {
@@ -28,6 +29,18 @@ function WalletPage() {
 	const navigateToTransfer = useCallback(() => {
 		router.push("/transfer");
 	}, []);
+
+	const handleTopUp = useCallback(async () => {
+		try {
+			const result = await orpc.topUp.call({ amount: 5000 });
+			await handleTopUpResponse(result);
+			setBalance(result.newBalance);
+			toast.show({ variant: "success", label: "Top up successful!" });
+		} catch (error) {
+			toast.show({ variant: "danger", label: "Failed to top up" });
+			console.error(error);
+		}
+	}, [toast]);
 
 	return (
 		<Container>
@@ -70,7 +83,15 @@ function WalletPage() {
 					</View>
 				</View>
 
-				<View className="absolute bottom-8 left-0 right-0 items-center">
+				<View className="absolute bottom-8 left-0 right-0 flex-row items-center justify-center gap-4">
+					<TouchableOpacity
+						onPress={handleTopUp}
+						className="flex-row items-center gap-2 rounded-full bg-success px-6 py-4"
+						style={{ shadowColor: "#000", shadowOffset: { width: 0, height: 4 }, shadowOpacity: 0.3, shadowRadius: 8, elevation: 8 }}
+					>
+						<Ionicons name="add" size={24} color={foregroundColor} />
+						<Text className="font-semibold text-lg text-foreground">Top Up $50</Text>
+					</TouchableOpacity>
 					<TouchableOpacity
 						onPress={navigateToTransfer}
 						className="flex-row items-center gap-2 rounded-full bg-primary px-8 py-4"

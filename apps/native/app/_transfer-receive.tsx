@@ -1,3 +1,4 @@
+import { sleep } from "@/utils/sleep";
 import { Ionicons } from "@expo/vector-icons";
 import { CameraView, useCameraPermissions } from "expo-camera";
 import * as Haptics from "expo-haptics";
@@ -52,29 +53,32 @@ function TransferReceive() {
             </TouchableOpacity>
           </View>
         ) : (
-          <CameraView
-            className="flex-1"
-            facing="front"
-            barcodeScannerSettings={{
-              barcodeTypes: ["qr"],
-            }}
-            onBarcodeScanned={(result) => {
-              if (sequence >= 5) return;
-              const data = result.data;
-              if (data !== lastScannedData) {
-                setLastScannedData(data);
-                setSequence((prev) => prev + 1);
-                setScanned(false);
-              }
-            }}
-          >
-            <View className="flex-1 items-center justify-center">
-              <View className="h-48 w-48 border-2 border-foreground/50 rounded-lg" />
-              <Text className="mt-4 text-center text-foreground text-sm">
-                Point camera at sender's QR code
-              </Text>
-            </View>
-          </CameraView>
+          <>
+            <CameraView
+              className="flex-1"
+              facing="front"
+              barcodeScannerSettings={{
+                barcodeTypes: ["qr"],
+              }}
+              onBarcodeScanned={async (result) => {
+                if (sequence >= 5) return;
+                const data = result.data;
+                if (data !== lastScannedData) {
+                  await sleep(300);
+                  setLastScannedData(data);
+                  setSequence((prev) => prev + 1);
+                  setScanned(false);
+                }
+              }}
+            >
+              <View className="flex-1 items-center justify-center">
+                <View className="h-48 w-48 border-2 border-foreground/50 rounded-lg" />
+                <Text className="mt-4 text-center text-foreground text-sm">
+                  Point camera at sender's QR code
+                </Text>
+              </View>
+            </CameraView>
+          </>
         )}
       </View>
     </View>

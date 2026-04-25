@@ -40,6 +40,89 @@ export const appRouter = {
 		user: context.session?.user,
 	})),
 
+	// ── Wallet Top-Up ─────────────────────────────────────────────────────────
+	topUp: protectedProcedure
+		.input(
+			z.object({
+				amount: z.number().int().positive(),
+			}),
+		)
+		.handler(async ({ input, context }) => {
+			const userId = context.session.user.id;
+			const { amount } = input;
+
+			// 1. Get or create user's wallet
+			const [userWallet] = await db
+				.select()
+				.from(wallet)
+				.where(eq(wallet.userId, userId))
+				.limit(1);
+
+			let userWalletRec = userWallet;
+
+			if (!userWalletRec) {
+				const walletId = crypto.randomUUID();
+				const [created] = await db
+					.insert(wallet)
+					.values({
+						id: walletId,
+						userId,
+						name: "My Wallet",
+						balance: 0,
+						currency: "USD",
+					})
+					.returning();
+				userWalletRec = created;
+			}
+
+			if (!userWalletRec) {
+				throw new ORPCError("INTERNAL_SERVER_ERROR", {
+					message: "Failed to create wallet.",
+				});
+			}
+
+			// 2. Get the latest sequence number for this user
+			const [latestEntry] = await db
+				.select({ sequenceNumber: ledger.sequenceNumber })
+				.from(ledger)
+				.where(eq(ledger.userId, userId))
+				.orderBy(sql`${ledger.sequenceNumber} DESC`)
+				.limit(1);
+
+			const nextSequenceNumber = (latestEntry?.sequenceNumber ?? -1) + 1;
+			const prevTxHash = latestEntry ? crypto.randomUUID() : null;
+
+			// 3. Create ledger entry (deposit from SYSTEM)
+			const entryId = crypto.randomUUID();
+			const [inserted] = await db
+				.insert(ledger)
+				.values({
+					id: entryId,
+					userId,
+					fromPubKey: "SYSTEM_TOPUP",
+					toPubKey: userWalletRec.id,
+					amount,
+					prevTxHash,
+					sequenceNumber: nextSequenceNumber,
+					signature: "MOCK_SIGNATURE",
+					status: "acknowledged",
+				})
+				.returning();
+
+			// 4. Update wallet balance
+			const newBalance = Number(userWalletRec.balance) + amount;
+			await db
+				.update(wallet)
+				.set({ balance: newBalance })
+				.where(eq(wallet.id, userWalletRec.id));
+
+			return {
+				entry: serialiseLedger(inserted!),
+				walletId: userWalletRec.id,
+				newBalance,
+			};
+		}),
+
 	// ── Dashboard: KPI summary ─────────────────────────────────────────────────
 	getDashboardKpi: protectedProcedure.handler(async () => {
 		const rows = await db

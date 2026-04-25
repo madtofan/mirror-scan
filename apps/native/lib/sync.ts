@@ -283,3 +283,48 @@ export async function retryPendingPush(db?: SQLiteDatabase): Promise<number> {
 
 	return successCount;
 }
+
+export type TopUpResponse = {
+	entry: {
+		id: string;
+		userId: string;
+		fromPubKey: string;
+		toPubKey: string;
+		amount: number;
+		prevTxHash: string | null;
+		sequenceNumber: number;
+		signature: string;
+		status: string;
+		createdAt: string;
+		updatedAt: string;
+	};
+	walletId: string;
+	newBalance: number;
+};
+
+export async function handleTopUpResponse(
+	topUpResponse: TopUpResponse,
+	db?: SQLiteDatabase,
+): Promise<void> {
+	const database = db ?? await getDb();
+	await migrateIfNeeded(database);
+
+	const { entry } = topUpResponse;
+
+	await database.runAsync(
+		`INSERT OR REPLACE INTO ledger (id, from_pub_key, to_pub_key, amount, prev_tx_hash, sequence_number, signature, status, created_at, updated_at)
+       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+		[
+			entry.id,
+			entry.fromPubKey,
+			entry.toPubKey,
+			entry.amount,
+			entry.prevTxHash,
+			entry.sequenceNumber,
+			entry.signature,
+			entry.status,
+			Math.floor(new Date(entry.createdAt).getTime() / 1000),
+			Math.floor(new Date(entry.updatedAt).getTime() / 1000),
+		],
+	);
+}

@@ -14,4 +14,4 @@ WORKDIR /app/apps/server
 
 EXPOSE 3000
 
-CMD ["tsx", "src/index.ts"]
+CMD ["tsx", "/app/apps/server/src/index.ts"]

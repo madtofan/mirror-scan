@@ -21,6 +21,6 @@ COPY apps web/
 COPY apps server/
 COPY packages packages/
 
-EXPOSE 5173
+EXPOSE 3001
 
 CMD ["pnpm", "--filter", "web", "dev"]

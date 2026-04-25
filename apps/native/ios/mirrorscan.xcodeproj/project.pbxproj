@@ -9,27 +9,27 @@
 /* Begin PBXBuildFile section */
 		13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB51A68108700A75B9A /* Images.xcassets */; };
 		3E461D99554A48A4959DE609 /* SplashScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = AA286B85B6C04FC6940260E9 /* SplashScreen.storyboard */; };
-		6A0DD0099784BFC2F6EA375D /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = 64B7BD79D47A2557C513A043 /* PrivacyInfo.xcprivacy */; };
+		9C32339D42057718D42334A1 /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = B631F5D6585A1E3EB2CA0E2A /* PrivacyInfo.xcprivacy */; };
+		9D795550FF9140AB33EC4875 /* libPods-mirrorscan.a in Frameworks */ = {isa = PBXBuildFile; fileRef = B7D46729264B9E9BEBF97521 /* libPods-mirrorscan.a */; };
+		B43D12C0D57FB077F5206FD5 /* ExpoModulesProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = E71B91BFDE716625A218CC3D /* ExpoModulesProvider.swift */; };
 		BB2F792D24A3F905000567C9 /* Expo.plist in Resources */ = {isa = PBXBuildFile; fileRef = BB2F792C24A3F905000567C9 /* Expo.plist */; };
-		E7B39B5C7344C4DCD8F4503F /* ExpoModulesProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5BFF620B488AB991669B6CC3 /* ExpoModulesProvider.swift */; };
 		F11748422D0307B40044C1D9 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = F11748412D0307B40044C1D9 /* AppDelegate.swift */; };
-		FEE689318F8412B6423D80D3 /* libPods-mirrorscan.a in Frameworks */ = {isa = PBXBuildFile; fileRef = FC2EFB4A6A6FE6944147BE18 /* libPods-mirrorscan.a */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		0338D1B6E60FB877B0026712 /* Pods-mirrorscan.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-mirrorscan.release.xcconfig"; path = "Target Support Files/Pods-mirrorscan/Pods-mirrorscan.release.xcconfig"; sourceTree = "<group>"; };
 		13B07F961A680F5B00A75B9A /* mirrorscan.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = mirrorscan.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		13B07FB51A68108700A75B9A /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = Images.xcassets; path = mirrorscan/Images.xcassets; sourceTree = "<group>"; };
 		13B07FB61A68108700A75B9A /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = Info.plist; path = mirrorscan/Info.plist; sourceTree = "<group>"; };
-		3B6E0166A3FF8502EAD7F679 /* Pods-mirrorscan.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-mirrorscan.debug.xcconfig"; path = "Target Support Files/Pods-mirrorscan/Pods-mirrorscan.debug.xcconfig"; sourceTree = "<group>"; };
-		5BFF620B488AB991669B6CC3 /* ExpoModulesProvider.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = ExpoModulesProvider.swift; path = "Pods/Target Support Files/Pods-mirrorscan/ExpoModulesProvider.swift"; sourceTree = "<group>"; };
-		64B7BD79D47A2557C513A043 /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; includeInIndex = 1; name = PrivacyInfo.xcprivacy; path = mirrorscan/PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
+		70A00010447C02305218F49D /* Pods-mirrorscan.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-mirrorscan.debug.xcconfig"; path = "Target Support Files/Pods-mirrorscan/Pods-mirrorscan.debug.xcconfig"; sourceTree = "<group>"; };
 		AA286B85B6C04FC6940260E9 /* SplashScreen.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; name = SplashScreen.storyboard; path = mirrorscan/SplashScreen.storyboard; sourceTree = "<group>"; };
+		B631F5D6585A1E3EB2CA0E2A /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; includeInIndex = 1; name = PrivacyInfo.xcprivacy; path = mirrorscan/PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
+		B7D46729264B9E9BEBF97521 /* libPods-mirrorscan.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-mirrorscan.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		BB2F792C24A3F905000567C9 /* Expo.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Expo.plist; sourceTree = "<group>"; };
-		BC20FA7922EE51CB86BA9839 /* Pods-mirrorscan.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-mirrorscan.release.xcconfig"; path = "Target Support Files/Pods-mirrorscan/Pods-mirrorscan.release.xcconfig"; sourceTree = "<group>"; };
+		E71B91BFDE716625A218CC3D /* ExpoModulesProvider.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = ExpoModulesProvider.swift; path = "Pods/Target Support Files/Pods-mirrorscan/ExpoModulesProvider.swift"; sourceTree = "<group>"; };
 		ED297162215061F000B7C4FE /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = System/Library/Frameworks/JavaScriptCore.framework; sourceTree = SDKROOT; };
 		F11748412D0307B40044C1D9 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = AppDelegate.swift; path = mirrorscan/AppDelegate.swift; sourceTree = "<group>"; };
 		F11748442D0722820044C1D9 /* mirrorscan-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = "mirrorscan-Bridging-Header.h"; path = "mirrorscan/mirrorscan-Bridging-Header.h"; sourceTree = "<group>"; };
-		FC2EFB4A6A6FE6944147BE18 /* libPods-mirrorscan.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-mirrorscan.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -37,23 +37,13 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				FEE689318F8412B6423D80D3 /* libPods-mirrorscan.a in Frameworks */,
+				9D795550FF9140AB33EC4875 /* libPods-mirrorscan.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		08AD97E53F3A040748C2F37E /* Pods */ = {
-			isa = PBXGroup;
-			children = (
-				3B6E0166A3FF8502EAD7F679 /* Pods-mirrorscan.debug.xcconfig */,
-				BC20FA7922EE51CB86BA9839 /* Pods-mirrorscan.release.xcconfig */,
-			);
-			name = Pods;
-			path = Pods;
-			sourceTree = "<group>";
-		};
 		13B07FAE1A68108700A75B9A /* mirrorscan */ = {
 			isa = PBXGroup;
 			children = (
@@ -63,7 +53,7 @@
 				13B07FB51A68108700A75B9A /* Images.xcassets */,
 				13B07FB61A68108700A75B9A /* Info.plist */,
 				AA286B85B6C04FC6940260E9 /* SplashScreen.storyboard */,
-				64B7BD79D47A2557C513A043 /* PrivacyInfo.xcprivacy */,
+				B631F5D6585A1E3EB2CA0E2A /* PrivacyInfo.xcprivacy */,
 			);
 			name = mirrorscan;
 			sourceTree = "<group>";
@@ -72,9 +62,17 @@
 			isa = PBXGroup;
 			children = (
 				ED297162215061F000B7C4FE /* JavaScriptCore.framework */,
-				FC2EFB4A6A6FE6944147BE18 /* libPods-mirrorscan.a */,
+				B7D46729264B9E9BEBF97521 /* libPods-mirrorscan.a */,
 			);
 			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		50C9B6E1140DDA5F308776AE /* mirrorscan */ = {
+			isa = PBXGroup;
+			children = (
+				E71B91BFDE716625A218CC3D /* ExpoModulesProvider.swift */,
+			);
+			name = mirrorscan;
 			sourceTree = "<group>";
 		};
 		832341AE1AAA6A7D00B99B32 /* Libraries */ = {
@@ -91,8 +89,8 @@
 				832341AE1AAA6A7D00B99B32 /* Libraries */,
 				83CBBA001A601CBA00E9B192 /* Products */,
 				2D16E6871FA4F8E400B85C8A /* Frameworks */,
-				08AD97E53F3A040748C2F37E /* Pods */,
-				A4C7814177FA197D6CA7C862 /* ExpoModulesProviders */,
+				BB785B2CAC5BC23F3923739F /* Pods */,
+				965AD7A10312E1A81FCB3106 /* ExpoModulesProviders */,
 			);
 			indentWidth = 2;
 			sourceTree = "<group>";
@@ -107,10 +105,10 @@
 			name = Products;
 			sourceTree = "<group>";
 		};
-		A4C7814177FA197D6CA7C862 /* ExpoModulesProviders */ = {
+		965AD7A10312E1A81FCB3106 /* ExpoModulesProviders */ = {
 			isa = PBXGroup;
 			children = (
-				C746BBFBE8C71975AFAF9B85 /* mirrorscan */,
+				50C9B6E1140DDA5F308776AE /* mirrorscan */,
 			);
 			name = ExpoModulesProviders;
 			sourceTree = "<group>";
@@ -124,12 +122,14 @@
 			path = mirrorscan/Supporting;
 			sourceTree = "<group>";
 		};
-		C746BBFBE8C71975AFAF9B85 /* mirrorscan */ = {
+		BB785B2CAC5BC23F3923739F /* Pods */ = {
 			isa = PBXGroup;
 			children = (
-				5BFF620B488AB991669B6CC3 /* ExpoModulesProvider.swift */,
+				70A00010447C02305218F49D /* Pods-mirrorscan.debug.xcconfig */,
+				0338D1B6E60FB877B0026712 /* Pods-mirrorscan.release.xcconfig */,
 			);
-			name = mirrorscan;
+			name = Pods;
+			path = Pods;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -140,13 +140,13 @@
 			buildConfigurationList = 13B07F931A680F5B00A75B9A /* Build configuration list for PBXNativeTarget "mirrorscan" */;
 			buildPhases = (
 				08A4A3CD28434E44B6B9DE2E /* [CP] Check Pods Manifest.lock */,
-				847F2B08B2C0D0B14F896173 /* [Expo] Configure project */,
+				2673D9FE939D7EB0DB196205 /* [Expo] Configure project */,
 				13B07F871A680F5B00A75B9A /* Sources */,
 				13B07F8C1A680F5B00A75B9A /* Frameworks */,
 				13B07F8E1A680F5B00A75B9A /* Resources */,
 				00DD1BFF1BD5951E006B06BC /* Bundle React Native code and images */,
 				800E24972A6A228C8D4807E9 /* [CP] Copy Pods Resources */,
-				A0C7B6085D77B9B48E7DA649 /* [CP] Embed Pods Frameworks */,
+				24C8F4937A07E3380BF8870D /* [CP] Embed Pods Frameworks */,
 			);
 			buildRules = (
 			);
@@ -198,7 +198,7 @@
 				BB2F792D24A3F905000567C9 /* Expo.plist in Resources */,
 				13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */,
 				3E461D99554A48A4959DE609 /* SplashScreen.storyboard in Resources */,
-				6A0DD0099784BFC2F6EA375D /* PrivacyInfo.xcprivacy in Resources */,
+				9C32339D42057718D42334A1 /* PrivacyInfo.xcprivacy in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -244,61 +244,7 @@
 			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
 			showEnvVarsInLog = 0;
 		};
-		800E24972A6A228C8D4807E9 /* [CP] Copy Pods Resources */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-mirrorscan/Pods-mirrorscan-resources.sh",
-				"${PODS_CONFIGURATION_BUILD_DIR}/EXConstants/EXConstants.bundle",
-				"${PODS_CONFIGURATION_BUILD_DIR}/EXConstants/ExpoConstants_privacy.bundle",
-				"${PODS_CONFIGURATION_BUILD_DIR}/ExpoFileSystem/ExpoFileSystem_privacy.bundle",
-				"${PODS_CONFIGURATION_BUILD_DIR}/RNSVG/RNSVGFilters.bundle",
-				"${PODS_CONFIGURATION_BUILD_DIR}/React-Core/React-Core_privacy.bundle",
-				"${PODS_CONFIGURATION_BUILD_DIR}/React-cxxreact/React-cxxreact_privacy.bundle",
-				"${PODS_CONFIGURATION_BUILD_DIR}/SDWebImage/SDWebImage.bundle",
-			);
-			name = "[CP] Copy Pods Resources";
-			outputPaths = (
-				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/EXConstants.bundle",
-				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/ExpoConstants_privacy.bundle",
-				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/ExpoFileSystem_privacy.bundle",
-				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/RNSVGFilters.bundle",
-				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/React-Core_privacy.bundle",
-				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/React-cxxreact_privacy.bundle",
-				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/SDWebImage.bundle",
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-mirrorscan/Pods-mirrorscan-resources.sh\"\n";
-			showEnvVarsInLog = 0;
-		};
-		847F2B08B2C0D0B14F896173 /* [Expo] Configure project */ = {
-			isa = PBXShellScriptBuildPhase;
-			alwaysOutOfDate = 1;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-			);
-			inputPaths = (
-				"$(SRCROOT)/.xcode.env",
-				"$(SRCROOT)/.xcode.env.local",
-				"$(SRCROOT)/mirrorscan/mirrorscan.entitlements",
-				"$(SRCROOT)/Pods/Target Support Files/Pods-mirrorscan/expo-configure-project.sh",
-			);
-			name = "[Expo] Configure project";
-			outputFileListPaths = (
-			);
-			outputPaths = (
-				"$(SRCROOT)/Pods/Target Support Files/Pods-mirrorscan/ExpoModulesProvider.swift",
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "# This script configures Expo modules and generates the modules provider file.\nbash -l -c \"./Pods/Target\\ Support\\ Files/Pods-mirrorscan/expo-configure-project.sh\"\n";
-		};
-		A0C7B6085D77B9B48E7DA649 /* [CP] Embed Pods Frameworks */ = {
+		24C8F4937A07E3380BF8870D /* [CP] Embed Pods Frameworks */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -322,6 +268,62 @@
 			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-mirrorscan/Pods-mirrorscan-frameworks.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
+		2673D9FE939D7EB0DB196205 /* [Expo] Configure project */ = {
+			isa = PBXShellScriptBuildPhase;
+			alwaysOutOfDate = 1;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+				"$(SRCROOT)/.xcode.env",
+				"$(SRCROOT)/.xcode.env.local",
+				"$(SRCROOT)/mirrorscan/mirrorscan.entitlements",
+				"$(SRCROOT)/Pods/Target Support Files/Pods-mirrorscan/expo-configure-project.sh",
+			);
+			name = "[Expo] Configure project";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+				"$(SRCROOT)/Pods/Target Support Files/Pods-mirrorscan/ExpoModulesProvider.swift",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "# This script configures Expo modules and generates the modules provider file.\nbash -l -c \"./Pods/Target\\ Support\\ Files/Pods-mirrorscan/expo-configure-project.sh\"\n";
+		};
+		800E24972A6A228C8D4807E9 /* [CP] Copy Pods Resources */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-mirrorscan/Pods-mirrorscan-resources.sh",
+				"${PODS_CONFIGURATION_BUILD_DIR}/AsyncStorage/AsyncStorage_resources.bundle",
+				"${PODS_CONFIGURATION_BUILD_DIR}/EXConstants/EXConstants.bundle",
+				"${PODS_CONFIGURATION_BUILD_DIR}/EXConstants/ExpoConstants_privacy.bundle",
+				"${PODS_CONFIGURATION_BUILD_DIR}/ExpoFileSystem/ExpoFileSystem_privacy.bundle",
+				"${PODS_CONFIGURATION_BUILD_DIR}/RNSVG/RNSVGFilters.bundle",
+				"${PODS_CONFIGURATION_BUILD_DIR}/React-Core/React-Core_privacy.bundle",
+				"${PODS_CONFIGURATION_BUILD_DIR}/React-cxxreact/React-cxxreact_privacy.bundle",
+				"${PODS_CONFIGURATION_BUILD_DIR}/SDWebImage/SDWebImage.bundle",
+			);
+			name = "[CP] Copy Pods Resources";
+			outputPaths = (
+				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/AsyncStorage_resources.bundle",
+				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/EXConstants.bundle",
+				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/ExpoConstants_privacy.bundle",
+				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/ExpoFileSystem_privacy.bundle",
+				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/RNSVGFilters.bundle",
+				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/React-Core_privacy.bundle",
+				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/React-cxxreact_privacy.bundle",
+				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/SDWebImage.bundle",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-mirrorscan/Pods-mirrorscan-resources.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
 /* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
@@ -330,7 +332,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				F11748422D0307B40044C1D9 /* AppDelegate.swift in Sources */,
-				E7B39B5C7344C4DCD8F4503F /* ExpoModulesProvider.swift in Sources */,
+				B43D12C0D57FB077F5206FD5 /* ExpoModulesProvider.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -339,7 +341,7 @@
 /* Begin XCBuildConfiguration section */
 		13B07F941A680F5B00A75B9A /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 3B6E0166A3FF8502EAD7F679 /* Pods-mirrorscan.debug.xcconfig */;
+			baseConfigurationReference = 70A00010447C02305218F49D /* Pods-mirrorscan.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
@@ -378,7 +380,7 @@
 		};
 		13B07F951A680F5B00A75B9A /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = BC20FA7922EE51CB86BA9839 /* Pods-mirrorscan.release.xcconfig */;
+			baseConfigurationReference = 0338D1B6E60FB877B0026712 /* Pods-mirrorscan.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;

@@ -1,4 +1,26 @@
 PODS:
+  - AsyncStorage (3.0.2):
+    - hermes-engine
+    - RCTRequired
+    - RCTTypeSafety
+    - React-Core
+    - React-Core-prebuilt
+    - React-debug
+    - React-Fabric
+    - React-featureflags
+    - React-graphics
+    - React-ImageManager
+    - React-jsi
+    - React-NativeModulesApple
+    - React-RCTFabric
+    - React-renderercss
+    - React-rendererdebug
+    - React-utils
+    - ReactCodegen
+    - ReactCommon/turbomodule/bridging
+    - ReactCommon/turbomodule/core
+    - ReactNativeDependencies
+    - Yoga
   - EXConstants (55.0.14):
     - ExpoModulesCore
   - Expo (55.0.15):
@@ -2290,6 +2312,7 @@ PODS:
     - ZXingObjC/Core
 
 DEPENDENCIES:
+  - "AsyncStorage (from `../../../node_modules/.pnpm/@react-native-async-storage+async-storage@3.0.2_react-native@0.83.2_@babel+core@7.29.0__5d2138ca12eb88e3e9cb4a83112a5a43/node_modules/@react-native-async-storage/async-storage`)"
   - "EXConstants (from `../../../node_modules/.pnpm/expo-constants@55.0.14_expo@55.0.15_react-native@0.83.2_@babel+core@7.29.0_@types+react_ff114308cf45bfa9ba2a4fe00d0c0c87/node_modules/expo-constants/ios`)"
   - "Expo (from `../../../node_modules/.pnpm/expo@55.0.15_@babel+core@7.29.0_@expo+dom-webview@55.0.5_@expo+metro-runtime@55.0.9_exp_7633a37b8f3abc100b5ae6632ba6dda3/node_modules/expo`)"
   - "ExpoAsset (from `../../../node_modules/.pnpm/expo-asset@55.0.15_expo@55.0.15_react-native@0.83.2_@babel+core@7.29.0_@types+react@19._b3a642b901fc5011085d9fe518de1233/node_modules/expo-asset/ios`)"
@@ -2406,6 +2429,8 @@ SPEC REPOS:
     - ZXingObjC
 
 EXTERNAL SOURCES:
+  AsyncStorage:
+    :path: "../../../node_modules/.pnpm/@react-native-async-storage+async-storage@3.0.2_react-native@0.83.2_@babel+core@7.29.0__5d2138ca12eb88e3e9cb4a83112a5a43/node_modules/@react-native-async-storage/async-storage"
   EXConstants:
     :path: "../../../node_modules/.pnpm/expo-constants@55.0.14_expo@55.0.15_react-native@0.83.2_@babel+core@7.29.0_@types+react_ff114308cf45bfa9ba2a4fe00d0c0c87/node_modules/expo-constants/ios"
   Expo:
@@ -2613,6 +2638,7 @@ EXTERNAL SOURCES:
     :path: "../../../node_modules/.pnpm/react-native@0.83.2_@babel+core@7.29.0_@types+react@19.2.14_react@19.2.0/node_modules/react-native/ReactCommon/yoga"
 
 SPEC CHECKSUMS:
+  AsyncStorage: 2e1d431842588f5af845737e6435c1fcbecdab51
   EXConstants: bfe4ae4e5d882e2e0b130e049665d0af4f4cc1b8
   Expo: a43f44ff1e3a1c73fcabba766e13a38dea22236a
   ExpoAsset: dc4f25f84886120f82b23233bba563ea7afa88f5

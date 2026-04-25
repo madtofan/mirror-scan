@@ -7,7 +7,7 @@ import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { KeyboardProvider } from "react-native-keyboard-controller";
 import { SplashScreenController } from "@/components/splash";
 import { AppThemeProvider } from "@/contexts/app-theme-context";
-import { authClient } from "@/lib/auth-client";
+import { useOfflineSession } from "@/lib/use-offline-session";
 import { migrateDbIfNeeded } from "@/lib/ledger";
 import { queryClient } from "@/utils/orpc";
 
@@ -16,7 +16,7 @@ export const unstable_settings = {
 };
 
 function StackLayout() {
-	const { data: session } = authClient.useSession();
+	const { session } = useOfflineSession();
 	console.log({ session });
 
 	return (

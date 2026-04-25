@@ -1,41 +1,78 @@
+import { router } from "expo-router";
 import { sleep } from "@/utils/sleep";
 import { Ionicons } from "@expo/vector-icons";
 import { CameraView, useCameraPermissions } from "expo-camera";
 import * as Haptics from "expo-haptics";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo, useCallback } from "react";
 import { Text, TouchableOpacity, View } from "react-native";
 import QRCode from "react-native-qrcode-svg";
+import { ReceiveFirst, ReceiveSecond, SendFirst } from "@/types/dto";
+import { useOfflineSession } from "@/lib/use-offline-session";
 
 function TransferReceive() {
-  const [uuid] = useState(() => {
-    return "demo-uuid-" + Math.random().toString(36).substring(7);
-  });
   const [permission, requestPermission] = useCameraPermissions();
+  const [scanEnabled, setScanEnabled] = useState(true);
   const [scanned, setScanned] = useState(false);
   const [sequence, setSequence] = useState(0);
   const [lastScannedData, setLastScannedData] = useState("");
+  const [receivedAmount, setReceivedAmount] = useState("");
+  const { session } = useOfflineSession();
+  const [qrData, setQrData] = useState('')
 
-  const qrData = JSON.stringify({
-    uuid,
-    sequence,
-    type: "receive",
-  });
+  const generateFirstData = useCallback((): ReceiveFirst => {
+    return {
+      userId: session?.user.id ?? '',
+    }
+  }, [session]);
+
+  const generateSecondData = useCallback((): ReceiveSecond => {
+    return {
+      message: 'success',
+    }
+  }, []);
+
+  const reEnableScan = async () => {
+    await sleep(300);
+    setScanEnabled(true);
+  }
 
   useEffect(() => {
-    if (sequence === 5) {
+    const redirect = async (amount: number) => {
+      await sleep(1000);
       Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
-      alert("Transaction Complete!");
+      router.replace(
+        `/transaction-success?type=send&amount=${amount}&timestamp=${Date.now()}`
+      );
     }
-  }, [sequence]);
+
+    const info: SendFirst = JSON.parse(lastScannedData || "{}");
+    if (info.amount_sent) {
+      setQrData(JSON.stringify(
+        generateSecondData()
+      ));
+      redirect(info.amount_sent);
+      setSequence(1);
+      return;
+    }
+
+    if (sequence === 0) {
+      setQrData(JSON.stringify(
+        generateFirstData()
+      ));
+      return;
+    }
+  }, [lastScannedData, generateFirstData, generateSecondData]);
 
   return (
     <View className="flex-1">
       <View className="h-1/2 items-center justify-center rounded-3xl p-6 bg-secondary mx-4 mt-4">
-        <QRCode value={qrData} size={200} color="#000000" backgroundColor="#FFFFFF" />
+        {qrData && (
+          <QRCode value={qrData} size={200} color="#000000" backgroundColor="#FFFFFF" />
+        )}
         <Text className="mt-4 text-center text-foreground text-lg font-bold">
-          {uuid.slice(0, 8).toUpperCase()}
+          {session?.user.id ?? 'User not available'}
         </Text>
-        <Text className="text-center text-muted text-sm">Sequence: {sequence}/5</Text>
+        {/* <Text className="text-center text-muted text-sm">Sequence: {sequence}/5</Text> */}
       </View>
 
       <View className="h-1/2 rounded-t-3xl overflow-hidden mx-4">
@@ -61,13 +98,15 @@ function TransferReceive() {
                 barcodeTypes: ["qr"],
               }}
               onBarcodeScanned={async (result) => {
-                if (sequence >= 5) return;
+                if (!scanEnabled) {
+                  return;
+                }
                 const data = result.data;
                 if (data !== lastScannedData) {
-                  await sleep(300);
                   setLastScannedData(data);
-                  setSequence((prev) => prev + 1);
                   setScanned(false);
+                  setScanEnabled(false);
+                  reEnableScan();
                 }
               }}
             >

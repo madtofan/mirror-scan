@@ -1,46 +1,110 @@
+import { router } from "expo-router";
 import { sleep } from "@/utils/sleep";
 import { Ionicons } from "@expo/vector-icons";
 import { CameraView, useCameraPermissions } from "expo-camera";
 import * as Haptics from "expo-haptics";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo, useCallback } from "react";
 import { Text, TextInput, TouchableOpacity, View } from "react-native";
 import QRCode from "react-native-qrcode-svg";
+import { ReceiveFirst, ReceiveSecond, SendFirst } from "@/types/dto";
+import { useOfflineSession } from "@/lib/use-offline-session";
 
 function TransferSend() {
   const [amount, setAmount] = useState("");
   const [showQR, setShowQR] = useState(false);
+  const [qrData, setQRData] = useState('');
   const [permission, requestPermission] = useCameraPermissions();
+  const [scanEnabled, setScanEnabled] = useState(true);
   const [scanned, setScanned] = useState(false);
   const [sequence, setSequence] = useState(0);
   const [lastScannedData, setLastScannedData] = useState("");
+  const { session } = useOfflineSession();
 
-  const qrData = JSON.stringify({
-    amount: parseFloat(amount) || 0,
-    sequence,
-    type: "send",
-  });
+  // const qrData = useMemo(() => {
+  //   const status: ReceiveSecond = JSON.parse(lastScannedData || "{}");
+  //   if (status.message === 'success') {
+  //     const message: ReceiveSecond = {
+  //       message: 'success',
+  //     };
+  //     return JSON.stringify(message);
+  //   }
+  //
+  //   const receiverId: ReceiveFirst = JSON.parse(lastScannedData || "{}");
+  //   if (!receiverId.userId) {
+  //     return '{"message": ""}';
+  //   }
+  //
+  //   return JSON.stringify(
+  //     generateSendPayload(receiverId.userId)
+  //   );
+  // }, [sequence]);
+
+  const generateSendPayload = useCallback((receiverId: string): SendFirst => {
+    return {
+      sender: session?.user.id ?? '',
+      receiver: receiverId,
+      amount_sent: Number(amount || 0),
+      new_balance: 0,
+      sequence_number: '',
+      previous_tx_hash: '',
+      signature: '',
+    }
+  }, [amount, session]);
+
+  const reEnableScan = async () => {
+    await sleep(300);
+    setScanEnabled(true);
+  }
 
   useEffect(() => {
-    if (sequence === 5) {
-      Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
-      alert("Transaction Complete!");
-    }
-  }, [sequence]);
+    const asyncFunc = async () => {
+      const status: ReceiveSecond = JSON.parse(lastScannedData || "{}");
+      if (sequence >= 1 && status.message === 'success') {
+        const message: ReceiveSecond = {
+          message: 'success',
+        };
+
+        setSequence(2);
+        setQRData(JSON.stringify(message));
+        await sleep(1000);
+        Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
+        router.replace(
+          `/transaction-success?type=send&amount=${encodeURIComponent(amount)}&timestamp=${Date.now()}`
+        );
+      }
+
+      const receiverId: ReceiveFirst = JSON.parse(lastScannedData || "{}");
+      if (!receiverId.userId) {
+        return;
+      }
+
+      setSequence(1);
+
+      setQRData(JSON.stringify(
+        generateSendPayload(receiverId.userId)
+      ));
+    };
+    asyncFunc();
+  }, [lastScannedData, generateSendPayload]);
 
   if (showQR) {
     return (
       <View className="flex-1">
         <View className="h-1/2 items-center justify-center rounded-3xl p-6 bg-secondary mx-4 mt-4">
-          <QRCode
-            value={qrData}
-            size={200}
-            color="#000000"
-            backgroundColor="#FFFFFF"
-          />
-          <Text className="mt-4 text-center text-foreground text-lg font-bold">
-            {amount ? `$${amount}` : "$0"}
-          </Text>
-          <Text className="text-center text-muted text-sm">Sequence: {sequence}/5</Text>
+          {sequence === 0 || !qrData ? null : (
+            <>
+              <QRCode
+                value={qrData}
+                size={200}
+                color="#000000"
+                backgroundColor="#FFFFFF"
+              />
+              <Text className="mt-4 text-center text-foreground text-lg font-bold">
+                {amount ? `$${amount}` : "$0"}
+              </Text>
+              {/* <Text className="text-center text-muted text-sm">Sequence: {sequence}/5</Text> */}
+            </>
+          )}
         </View>
 
         <View className="h-1/2 rounded-t-3xl overflow-hidden mx-4">
@@ -66,13 +130,15 @@ function TransferSend() {
                   barcodeTypes: ["qr"],
                 }}
                 onBarcodeScanned={async (result) => {
+                  if (!scanEnabled) return;
                   if (sequence >= 5) return;
                   const data = result.data;
                   if (data !== lastScannedData) {
-                    await sleep(300);
+                    setScanEnabled(false);
                     setLastScannedData(data);
-                    setSequence((prev) => prev + 1);
+                    // setSequence((prev) => prev + 1);
                     setScanned(false);
+                    reEnableScan();
                   }
                 }}
               >

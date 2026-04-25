@@ -21,8 +21,8 @@ function TransferSend() {
 					<QRCode
 						value={qrData}
 						size={200}
-						color="#FFFFFF"
-						backgroundColor="transparent"
+						color="#000000"
+						backgroundColor="#FFFFFF"
 					/>
 					<Text className="mt-4 text-center text-foreground text-lg font-bold">
 						{amount ? `$${amount}` : "$0"}
@@ -43,7 +43,7 @@ function TransferSend() {
 								className="mt-4 rounded-lg bg-primary px-6 py-3"
 								onPress={requestPermission}
 							>
-								<Text className="text-white font-semibold">Grant Permission</Text>
+								<Text className="text-foreground font-semibold">Grant Permission</Text>
 							</TouchableOpacity>
 						</View>
 					) : (
@@ -61,8 +61,8 @@ function TransferSend() {
 							}}
 						>
 							<View className="flex-1 items-center justify-center">
-								<View className="h-48 w-48 border-2 border-white/50 rounded-lg" />
-								<Text className="mt-4 text-center text-white text-sm">
+								<View className="h-48 w-48 border-2 border-foreground/50 rounded-lg" />
+								<Text className="mt-4 text-center text-foreground text-sm">
 									Point camera at recipient's QR code
 								</Text>
 							</View>
@@ -109,7 +109,7 @@ function TransferSend() {
 						/>
 					</View>
 					<View className="rounded-lg bg-accent px-4 py-3">
-						<Text className="text-white font-bold text-lg">USD</Text>
+						<Text className="text-foreground font-bold text-lg">USD</Text>
 					</View>
 				</View>
 			</View>
@@ -124,7 +124,7 @@ function TransferSend() {
 							disabled={!amount}
 						>
 							<Text
-								className={`font-bold text-lg ${amount ? "text-white" : "text-muted"
+								className={`font-bold text-lg ${amount ? "text-foreground" : "text-muted"
 									}`}
 							>
 								Continue
@@ -147,7 +147,7 @@ function TransferReceive() {
 	return (
 		<View className="flex-1">
 			<View className="h-1/2 items-center justify-center rounded-3xl p-6 bg-secondary mx-4 mt-4">
-				<QRCode value={uuid} size={200} color="#FFFFFF" backgroundColor="transparent" />
+				<QRCode value={uuid} size={200} color="#000000" backgroundColor="#FFFFFF" />
 				<Text className="mt-4 text-center text-foreground text-lg font-bold">
 					${uuid.slice(0, 8).toUpperCase()}
 				</Text>
@@ -167,7 +167,7 @@ function TransferReceive() {
 							className="mt-4 rounded-lg bg-primary px-6 py-3"
 							onPress={requestPermission}
 						>
-							<Text className="text-white font-semibold">Grant Permission</Text>
+							<Text className="text-foreground font-semibold">Grant Permission</Text>
 						</TouchableOpacity>
 					</View>
 				) : (
@@ -184,8 +184,8 @@ function TransferReceive() {
 						}}
 					>
 						<View className="flex-1 items-center justify-center">
-							<View className="h-48 w-48 border-2 border-white/50 rounded-lg" />
-							<Text className="mt-4 text-center text-white text-sm">
+							<View className="h-48 w-48 border-2 border-foreground/50 rounded-lg" />
+							<Text className="mt-4 text-center text-foreground text-sm">
 								Point camera at sender's QR code
 							</Text>
 						</View>
@@ -230,7 +230,7 @@ function TransferPage() {
 								color={activeTab === "send" ? "#FFFFFF" : "#9CA3AF"}
 							/>
 							<Text
-								className={`ml-2 font-semibold ${activeTab === "send" ? "text-white" : "text-muted"
+								className={`ml-2 font-semibold ${activeTab === "send" ? "text-foreground" : "text-muted"
 									}`}
 							>
 								Send
@@ -247,7 +247,7 @@ function TransferPage() {
 								color={activeTab === "receive" ? "#FFFFFF" : "#9CA3AF"}
 							/>
 							<Text
-								className={`ml-2 font-semibold ${activeTab === "receive" ? "text-white" : "text-muted"
+								className={`ml-2 font-semibold ${activeTab === "receive" ? "text-foreground" : "text-muted"
 									}`}
 							>
 								Receive

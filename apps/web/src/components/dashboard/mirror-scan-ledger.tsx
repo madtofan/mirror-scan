@@ -55,27 +55,27 @@ function StatusBadge({ status }: { status: string }) {
 
 	const style = synced
 		? {
-				borderColor: "oklch(0.67 0.17 162 / 25%)",
-				color: "var(--tng-success)",
-				background: "oklch(0.67 0.17 162 / 8%)",
-			}
+			borderColor: "oklch(0.67 0.17 162 / 25%)",
+			color: "var(--tng-success)",
+			background: "oklch(0.67 0.17 162 / 8%)",
+		}
 		: rejected
 			? {
-					borderColor: "oklch(0.65 0.22 25 / 25%)",
-					color: "oklch(0.65 0.22 25)",
-					background: "oklch(0.65 0.22 25 / 8%)",
-				}
+				borderColor: "oklch(0.65 0.22 25 / 25%)",
+				color: "oklch(0.65 0.22 25)",
+				background: "oklch(0.65 0.22 25 / 8%)",
+			}
 			: sent
 				? {
-						borderColor: "oklch(0.78 0.16 75 / 25%)",
-						color: "var(--tng-warning)",
-						background: "oklch(0.78 0.16 75 / 8%)",
-					}
+					borderColor: "oklch(0.78 0.16 75 / 25%)",
+					color: "var(--tng-warning)",
+					background: "oklch(0.78 0.16 75 / 8%)",
+				}
 				: {
-						borderColor: "oklch(0.6 0.05 258 / 25%)",
-						color: "oklch(0.6 0.05 258)",
-						background: "oklch(0.6 0.05 258 / 8%)",
-					}
+					borderColor: "oklch(0.6 0.05 258 / 25%)",
+					color: "oklch(0.6 0.05 258)",
+					background: "oklch(0.6 0.05 258 / 8%)",
+				}
 
 	const dot = synced
 		? "var(--tng-success)"
@@ -125,7 +125,7 @@ export function MirrorScanLedger() {
 				status: statusFilter,
 				search: search || undefined,
 			},
-			refetchInterval: 30_000,
+			refetchInterval: 1_000,
 		}),
 	)
 
@@ -294,10 +294,10 @@ export function MirrorScanLedger() {
 									style={
 										p === currentPage
 											? {
-													background:
-														"linear-gradient(135deg, var(--tng-blue), var(--tng-cyan))",
-													color: "white",
-												}
+												background:
+													"linear-gradient(135deg, var(--tng-blue), var(--tng-cyan))",
+												color: "white",
+											}
 											: { color: "var(--muted-foreground)" }
 									}
 								>

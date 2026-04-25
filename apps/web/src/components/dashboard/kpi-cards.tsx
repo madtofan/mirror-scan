@@ -58,7 +58,7 @@ function KPISkeleton() {
 
 export function KPICards() {
 	const { data, isLoading } = useQuery(
-		orpc.getDashboardKpi.queryOptions({ refetchInterval: 30_000 }),
+		orpc.getDashboardKpi.queryOptions({ refetchInterval: 1_000 }),
 	)
 
 	if (isLoading || !data) {

@@ -1,5 +1,6 @@
 import type { SQLiteDatabase } from "expo-sqlite";
-import { pushEntry } from "./sync";
+import { pushEntry, getPendingEntries } from "./sync";
+import { setPendingPushFlag } from "./network";
 
 const LEDGER_TABLE_SQL = `
 CREATE TABLE IF NOT EXISTS ledger (
@@ -11,6 +12,16 @@ CREATE TABLE IF NOT EXISTS ledger (
   sequence_number INTEGER NOT NULL,
   signature TEXT NOT NULL,
   status TEXT DEFAULT 'pending' NOT NULL,
+  created_at INTEGER DEFAULT (strftime('%s', 'now')) NOT NULL,
+  updated_at INTEGER DEFAULT (strftime('%s', 'now')) NOT NULL
+);
+
+CREATE TABLE IF NOT EXISTS wallets (
+  id TEXT PRIMARY KEY NOT NULL,
+  user_id TEXT NOT NULL,
+  name TEXT NOT NULL,
+  balance INTEGER DEFAULT 0 NOT NULL,
+  currency TEXT DEFAULT 'USD' NOT NULL,
   created_at INTEGER DEFAULT (strftime('%s', 'now')) NOT NULL,
   updated_at INTEGER DEFAULT (strftime('%s', 'now')) NOT NULL
 );
@@ -45,13 +56,66 @@ export interface LedgerRow {
 
 export type NewLedgerRow = Omit<LedgerRow, "created_at" | "updated_at">;
 
-export async function getLatestEntry(
+export async function getWalletByUserId(
 	db: SQLiteDatabase,
-): Promise<LedgerRow | null> {
-	const result = await db.getFirstAsync<LedgerRow>(
-		"SELECT * FROM ledger ORDER BY sequence_number DESC LIMIT 1",
+	userId: string,
+): Promise<{ id: string; userId: string; name: string; balance: number } | null> {
+	const result = await db.getFirstAsync<{
+		id: string;
+		user_id: string;
+		name: string;
+		balance: number;
+	}>(
+		"SELECT id, user_id, name, balance FROM wallets WHERE user_id = ? LIMIT 1",
+		[userId],
 	);
-	return result;
+	if (!result) return null;
+	return {
+		id: result.id,
+		userId: result.user_id,
+		name: result.name,
+		balance: result.balance,
+	};
+}
+
+export interface TransactionData {
+	fromPubKey: string;
+	toPubKey: string;
+	amount: number;
+	prevTxHash: string | null;
+	sequenceNumber: number;
+	signature: string;
+}
+
+export async function generateTransactionData(
+	db: SQLiteDatabase,
+	fromUserId: string,
+	toUserId: string,
+	amount: number,
+): Promise<TransactionData> {
+	const [fromWallet, toWallet] = await Promise.all([
+		getWalletByUserId(db, fromUserId),
+		getWalletByUserId(db, toUserId),
+	]);
+
+	const fromPubKey = fromWallet?.id ?? fromUserId;
+	const toPubKey = toWallet?.id ?? toUserId;
+
+	const latest = await getLatestEntry(db);
+	const prevTxHash = latest?.id ?? null;
+	const sequenceNumber = (latest?.sequence_number ?? 0) + 1;
+
+	const txHash = `${fromPubKey}:${toPubKey}:${amount}:${sequenceNumber}:${prevTxHash}`;
+	const signature = btoa(txHash).slice(0, 64);
+
+	return {
+		fromPubKey,
+		toPubKey,
+		amount,
+		prevTxHash,
+		sequenceNumber,
+		signature,
+	};
 }
 
 export async function getNextSequenceNumber(
@@ -59,6 +123,15 @@ export async function getNextSequenceNumber(
 ): Promise<number> {
 	const latest = await getLatestEntry(db);
 	return (latest?.sequence_number ?? 0) + 1;
+}
+
+export async function getLatestEntry(
+	db: SQLiteDatabase,
+): Promise<LedgerRow | null> {
+	const result = await db.getFirstAsync<LedgerRow>(
+		"SELECT * FROM ledger ORDER BY sequence_number DESC LIMIT 1",
+	);
+	return result;
 }
 
 export async function getBalance(
@@ -97,23 +170,23 @@ export async function addTransaction(
 		],
 	);
 
-	try {
-		await pushEntry(
-			{
-				id: tx.id,
-				fromPubKey: tx.from_pub_key,
-				toPubKey: tx.to_pub_key,
-				amount: tx.amount,
-				prevTxHash: tx.prev_tx_hash,
-				sequenceNumber: tx.sequence_number,
-				signature: tx.signature,
-				status: tx.status,
-			},
-			db,
-		);
-	} catch (error) {
+	setPendingPushFlag(true).catch(console.error);
+
+	pushEntry(
+		{
+			id: tx.id,
+			fromPubKey: tx.from_pub_key,
+			toPubKey: tx.to_pub_key,
+			amount: tx.amount,
+			prevTxHash: tx.prev_tx_hash,
+			sequenceNumber: tx.sequence_number,
+			signature: tx.signature,
+			status: tx.status,
+		},
+		db,
+	).catch((error) => {
 		console.error("Failed to push transaction, will retry when online:", error);
-	}
+	});
 }
 
 export async function updateTransactionStatus(

@@ -2,6 +2,8 @@ import { Ionicons } from "@expo/vector-icons";
 import { router, useLocalSearchParams } from "expo-router";
 import { Text, TouchableOpacity, View } from "react-native";
 import { Container } from "@/components/container";
+import { useEffect, useState } from "react";
+import { getPendingPushFlag } from "@/lib/network";
 
 function TransactionSuccessPage() {
   const params = useLocalSearchParams<{
@@ -11,6 +13,8 @@ function TransactionSuccessPage() {
   }>();
 
   const { type, amount, timestamp } = params;
+
+  const [isSyncing, setIsSyncing] = useState(true);
 
   const isSend = type === "send";
   const displayAmount = amount ? `$${amount}` : "$0.00";
@@ -26,6 +30,17 @@ function TransactionSuccessPage() {
       hour12: true,
     });
   };
+
+  useEffect(() => {
+    const checkSyncStatus = async () => {
+      const hasPending = await getPendingPushFlag();
+      setIsSyncing(hasPending);
+    };
+
+    checkSyncStatus();
+    const interval = setInterval(checkSyncStatus, 2000);
+    return () => clearInterval(interval);
+  }, []);
 
   return (
     <Container>
@@ -52,6 +67,13 @@ function TransactionSuccessPage() {
           <Text className="mt-6 text-muted text-sm">
             {formatTimestamp(timestamp)}
           </Text>
+        )}
+
+        {isSyncing && (
+          <View className="mt-4 flex-row items-center gap-2">
+            <Ionicons name="cloud-upload-outline" size={16} color="#6B7280" />
+            <Text className="text-muted text-sm">Syncing...</Text>
+          </View>
         )}
       </View>
 

@@ -8,6 +8,8 @@ import { Text, TextInput, TouchableOpacity, View } from "react-native";
 import QRCode from "react-native-qrcode-svg";
 import { ReceiveFirst, ReceiveSecond, SendFirst } from "@/types/dto";
 import { useOfflineSession } from "@/lib/use-offline-session";
+import { useSQLiteContext } from "expo-sqlite";
+import { addTransaction, generateTransactionData, TxStatus } from "@/lib/ledger";
 
 function TransferSend() {
   const [amount, setAmount] = useState("");
@@ -18,7 +20,9 @@ function TransferSend() {
   const [scanned, setScanned] = useState(false);
   const [sequence, setSequence] = useState(0);
   const [lastScannedData, setLastScannedData] = useState("");
+  const [receiverUserId, setReceiverUserId] = useState("");
   const { session } = useOfflineSession();
+  const db = useSQLiteContext();
 
   // const qrData = useMemo(() => {
   //   const status: ReceiveSecond = JSON.parse(lastScannedData || "{}");
@@ -57,35 +61,62 @@ function TransferSend() {
   }
 
   useEffect(() => {
-    const asyncFunc = async () => {
-      const status: ReceiveSecond = JSON.parse(lastScannedData || "{}");
-      if (sequence >= 1 && status.message === 'success') {
-        const message: ReceiveSecond = {
-          message: 'success',
-        };
+    const handleConfirmation = async () => {
+      if (!receiverUserId) return;
 
-        setSequence(2);
-        setQRData(JSON.stringify(message));
-        await sleep(1000);
-        Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
-        router.replace(
-          `/transaction-success?type=send&amount=${encodeURIComponent(amount)}&timestamp=${Date.now()}`
+      try {
+        const txData = await generateTransactionData(
+          db,
+          session?.user.id ?? '',
+          receiverUserId,
+          Number(amount || 0),
         );
+
+        await addTransaction(db, {
+          id: crypto.randomUUID(),
+          from_pub_key: txData.fromPubKey,
+          to_pub_key: txData.toPubKey,
+          amount: txData.amount,
+          prev_tx_hash: txData.prevTxHash,
+          sequence_number: txData.sequenceNumber,
+          signature: txData.signature,
+          status: TxStatus.PENDING,
+        });
+      } catch (error) {
+        console.error("Failed to add transaction:", error);
       }
 
-      const receiverId: ReceiveFirst = JSON.parse(lastScannedData || "{}");
-      if (!receiverId.userId) {
-        return;
-      }
+      const message: ReceiveSecond = {
+        message: 'success',
+      };
 
-      setSequence(1);
+      setSequence(2);
+      setQRData(JSON.stringify(message));
+      await sleep(1000);
+      Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
+      router.replace(
+        `/transaction-success?type=send&amount=${encodeURIComponent(amount)}&timestamp=${Date.now()}`
+      );
+    }
 
-      setQRData(JSON.stringify(
-        generateSendPayload(receiverId.userId)
-      ));
-    };
-    asyncFunc();
-  }, [lastScannedData, generateSendPayload]);
+    const status: ReceiveSecond = JSON.parse(lastScannedData || "{}");
+    if (sequence >= 1 && status.message === 'success') {
+      handleConfirmation();
+      return;
+    }
+
+    const receiverId: ReceiveFirst = JSON.parse(lastScannedData || "{}");
+    if (!receiverId.userId) {
+      return;
+    }
+
+    setReceiverUserId(receiverId.userId);
+    setSequence(1);
+
+    setQRData(JSON.stringify(
+      generateSendPayload(receiverId.userId)
+    ));
+  }, [lastScannedData, generateSendPayload, db, session, amount, sequence, receiverUserId]);
 
   if (showQR) {
     return (

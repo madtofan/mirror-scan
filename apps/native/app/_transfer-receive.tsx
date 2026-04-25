@@ -8,6 +8,8 @@ import { Text, TouchableOpacity, View } from "react-native";
 import QRCode from "react-native-qrcode-svg";
 import { ReceiveFirst, ReceiveSecond, SendFirst } from "@/types/dto";
 import { useOfflineSession } from "@/lib/use-offline-session";
+import { useSQLiteContext } from "expo-sqlite";
+import { addTransaction, generateTransactionData, TxStatus } from "@/lib/ledger";
 
 function TransferReceive() {
   const [permission, requestPermission] = useCameraPermissions();
@@ -18,6 +20,7 @@ function TransferReceive() {
   const [receivedAmount, setReceivedAmount] = useState("");
   const { session } = useOfflineSession();
   const [qrData, setQrData] = useState('')
+  const db = useSQLiteContext();
 
   const generateFirstData = useCallback((): ReceiveFirst => {
     return {
@@ -37,11 +40,33 @@ function TransferReceive() {
   }
 
   useEffect(() => {
-    const redirect = async (amount: number) => {
+    const handleReceivedTransaction = async (info: SendFirst) => {
+      try {
+        const txData = await generateTransactionData(
+          db,
+          info.sender,
+          session?.user.id ?? '',
+          info.amount_sent,
+        );
+
+        await addTransaction(db, {
+          id: crypto.randomUUID(),
+          from_pub_key: txData.fromPubKey,
+          to_pub_key: txData.toPubKey,
+          amount: txData.amount,
+          prev_tx_hash: txData.prevTxHash,
+          sequence_number: txData.sequenceNumber,
+          signature: txData.signature,
+          status: TxStatus.PENDING,
+        });
+      } catch (error) {
+        console.error("Failed to add transaction:", error);
+      }
+
       await sleep(1000);
       Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
       router.replace(
-        `/transaction-success?type=send&amount=${amount}&timestamp=${Date.now()}`
+        `/transaction-success?type=send&amount=${info.amount_sent}&timestamp=${Date.now()}`
       );
     }
 
@@ -50,7 +75,7 @@ function TransferReceive() {
       setQrData(JSON.stringify(
         generateSecondData()
       ));
-      redirect(info.amount_sent);
+      handleReceivedTransaction(info);
       setSequence(1);
       return;
     }
@@ -61,7 +86,7 @@ function TransferReceive() {
       ));
       return;
     }
-  }, [lastScannedData, generateFirstData, generateSecondData]);
+  }, [lastScannedData, generateFirstData, generateSecondData, db, session]);
 
   return (
     <View className="flex-1">

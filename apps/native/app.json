@@ -1,35 +1,40 @@
 {
-	"expo": {
-		"scheme": "mirror-scan",
-		"userInterfaceStyle": "automatic",
-		"orientation": "default",
-		"web": {
-			"bundler": "metro"
-		},
-		"name": "mirror-scan",
-		"slug": "mirror-scan",
-		"plugins": [
-			"expo-font",
-			[
-				"expo-camera",
-				{
-					"cameraPermission": "Allow $(PRODUCT_NAME) to access your camera to scan QR codes."
-				}
-			]
-		],
-		"experiments": {
-			"typedRoutes": true,
-			"reactCompiler": true
-		},
-		"android": {
-			"permissions": [
-				"android.permission.CAMERA",
-				"android.permission.RECORD_AUDIO"
-			],
-			"package": "com.madtofan.transactionpoc"
-		},
-		"ios": {
-			"bundleIdentifier": "com.madtofan.transactionpoc"
-		}
-	}
+  "expo": {
+    "scheme": "mirror-scan",
+    "userInterfaceStyle": "automatic",
+    "orientation": "default",
+    "web": {
+      "bundler": "metro"
+    },
+    "name": "mirror-scan",
+    "slug": "mirror-scan",
+    "plugins": [
+      "expo-font",
+      [
+        "expo-camera",
+        {
+          "cameraPermission": "Allow $(PRODUCT_NAME) to access your camera to scan QR codes."
+        }
+      ]
+    ],
+    "experiments": {
+      "typedRoutes": true,
+      "reactCompiler": true
+    },
+    "android": {
+      "permissions": [
+        "android.permission.CAMERA",
+        "android.permission.RECORD_AUDIO"
+      ],
+      "package": "com.madtofan.transactionpoc"
+    },
+    "ios": {
+      "bundleIdentifier": "com.madtofan.transactionpoc"
+    },
+    "extra": {
+      "eas": {
+        "projectId": "4f090a63-5604-49a0-9705-0d0ca7ee08bd"
+      }
+    }
+  }
 }

@@ -10,6 +10,7 @@
 		"start": "node dist/index.mjs"
 	},
 	"dependencies": {
+		"@ai-sdk/openai": "^3.0.53",
 		"@hono/node-server": "^1.14.4",
 		"@mirror-scan/api": "workspace:*",
 		"@mirror-scan/auth": "workspace:*",
@@ -21,6 +22,7 @@
 		"@tanstack/ai": "^0.14.0",
 		"@tanstack/ai-openai": "^0.8.2",
 		"@tanstack/ai-react": "^0.8.0",
+		"ai": "^6.0.168",
 		"better-auth": "catalog:",
 		"dotenv": "catalog:",
 		"drizzle-orm": "^0.45.2",

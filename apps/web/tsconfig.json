@@ -1,17 +1,19 @@
 {
-  "compilerOptions": {
-    "strict": true,
-    "esModuleInterop": true,
-    "jsx": "react-jsx",
-    "target": "ESNext",
-    "module": "ESNext",
-    "moduleResolution": "Bundler",
-    "skipLibCheck": true,
-    "types": ["vite/client"],
-    "rootDirs": ["."],
-    "paths": {
-      "@/*": ["./src/*"],
-      "@mirror-scan/ui/*": ["../../packages/ui/src/*"]
-    }
-  }
+	"compilerOptions": {
+		"strict": true,
+		"esModuleInterop": true,
+		"jsx": "react-jsx",
+		"target": "ESNext",
+		"module": "ESNext",
+		"moduleResolution": "Bundler",
+		"verbatimModuleSyntax": true,
+		"skipLibCheck": true,
+		"types": ["vite/client"],
+		"rootDirs": ["."],
+		"baseUrl": ".",
+		"paths": {
+			"@/*": ["./src/*"],
+			"@mirror-scan/ui/*": ["../../packages/ui/src/*"]
+		}
+	}
 }

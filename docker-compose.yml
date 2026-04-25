@@ -1,0 +1,52 @@
+name: mirror-scan
+
+services:
+  db:
+    image: postgres:16
+    container_name: mirror-scan-db
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: mirror-scan
+    volumes:
+      - mirror-scan_postgres_data:/var/lib/postgresql
+    ports:
+      - "5432:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+  #
+  # server:
+  #   build:
+  #     context: .
+  #     dockerfile: apps/server/Dockerfile
+  #   container_name: mirror-scan-server
+  #   restart: unless-stopped
+  #   ports:
+  #     - "3000:3000"
+  #   environment:
+  #     DATABASE_URL: postgresql://postgres:password@db:5432/mirror-scan
+  #     BETTER_AUTH_URL: http://server:3000
+  #     CORS_ORIGIN: http://localhost:80
+  #     NODE_ENV: production
+  #   depends_on:
+  #     db:
+  #       condition: service_healthy
+  #
+  # web:
+  #   build:
+  #     context: .
+  #     dockerfile: apps/web/Dockerfile
+  #   container_name: mirror-scan-web
+  #   restart: unless-stopped
+  #   ports:
+  #     - "80:80"
+  #   depends_on:
+  #     server:
+  #       condition: service_started
+
+volumes:
+  mirror-scan_postgres_data:

@@ -16,8 +16,8 @@ This project was created with [Better-T-Stack](https://github.com/AmanVarshney01
 - **Drizzle** - TypeScript-first ORM
 - **PostgreSQL** - Database engine
 - **Authentication** - Better-Auth
+- **Biome** - Linting and formatting
 - **Nx** - Smart monorepo task orchestration and caching
-- **PWA** - Progressive Web App support
 
 ## Getting Started
 
@@ -76,6 +76,10 @@ import { Button } from "@mirror-scan/ui/components/button";
 
 If you want to add app-specific blocks instead of shared primitives, run the shadcn CLI from `apps/web`.
 
+## Git Hooks and Formatting
+
+- Format and lint fix: `pnpm run check`
+
 ## Project Structure
 
 ```
@@ -103,4 +107,83 @@ mirror-scan/
 - `pnpm run db:generate`: Generate database client/types
 - `pnpm run db:migrate`: Run database migrations
 - `pnpm run db:studio`: Open database studio UI
-- `cd apps/web && pnpm run generate-pwa-assets`: Generate PWA assets
+- `pnpm run check`: Run Biome formatting and linting
+
+## Docker Deployment
+
+This project includes Docker configuration for production deployment.
+
+### Architecture
+
+```
+┌─────────────┐      ┌─────────────┐      ┌─────────────┐
+│    web     │ ──▶  │  server    │ ──▶  │     db     │
+│  (nginx)   │      │   (node)   │      │ postgres  │
+│   :80      │      │  :3000    │      │   :5432   │
+└─────────────┘      └─────────────┘      └─────────────┘
+```
+
+- **web**: Nginx serving static React build (port 80)
+- **server**: Node.js + Hono + oRPC API (port 3000)
+- **db**: PostgreSQL 16 (port 5432)
+
+### Quick Start
+
+```bash
+# Build and start all services
+docker-compose up --build
+
+# View logs
+docker-compose logs -f
+
+# Stop all services
+docker-compose down
+```
+
+### Services
+
+| Service | Container Name | Port | Description |
+|---------|----------------|------|-------------|
+| `web` | mirror-scan-web | 80 | Nginx serving static files |
+| `server` | mirror-scan-server | 3000 | REST/RPC API |
+| `db` | mirror-scan-db | 5432 | PostgreSQL database |
+
+### Running Database Migrations
+
+After starting the containers, apply the database schema:
+
+```bash
+# Run migrations inside the server container
+docker-compose exec server pnpm --filter @mirror-scan/db db:push
+
+# Or run a shell in the container
+docker-compose exec server sh
+```
+
+### Troubleshooting
+
+```bash
+# Check container status
+docker-compose ps
+
+# View logs for specific service
+docker-compose logs web
+docker-compose logs server
+docker-compose logs db
+
+# Restart a specific service
+docker-compose restart server
+
+# Rebuild a specific service
+docker-compose build server
+docker-compose up -d server
+```
+
+### Environment Variables
+
+The following environment variables are configured in `docker-compose.yml`:
+
+- `DATABASE_URL`: PostgreSQL connection string
+- `BETTER_AUTH_URL`: Server URL for authentication
+- `CORS_ORIGIN`: Allowed origins for CORS
+- `NODE_ENV`: Set to `production`

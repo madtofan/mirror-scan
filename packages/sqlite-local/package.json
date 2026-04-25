@@ -1,0 +1,22 @@
+{
+	"name": "@mirror-scan/sqlite-local",
+	"version": "0.0.0",
+	"private": true,
+	"type": "module",
+	"exports": {
+		".": "./src/index.ts",
+		"./schema": "./src/schema/index.ts"
+	},
+	"dependencies": {
+		"dotenv": "catalog:",
+		"drizzle-orm": "^0.45.1",
+		"expo-sqlite": "~15.1.2",
+		"zod": "catalog:"
+	},
+	"devDependencies": {
+		"@mirror-scan/config": "workspace:*",
+		"@types/node": "^22.13.14",
+		"drizzle-kit": "^0.31.8",
+		"typescript": "^5"
+	}
+}

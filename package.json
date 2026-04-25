@@ -1,37 +1,39 @@
 {
-  "name": "mirror-scan",
-  "private": true,
-  "workspaces": [
-    "apps/*",
-    "packages/*"
-  ],
-  "type": "module",
-  "scripts": {
-    "dev": "nx run-many -t dev",
-    "build": "nx run-many -t build",
-    "check-types": "nx run-many -t check-types",
-    "dev:native": "nx run-many -t dev --projects=native",
-    "dev:web": "nx run-many -t dev --projects=web",
-    "dev:server": "nx run-many -t dev --projects=server",
-    "db:push": "nx run-many -t db:push --projects=@mirror-scan/db",
-    "db:studio": "nx run-many -t db:studio --projects=@mirror-scan/db",
-    "db:generate": "nx run-many -t db:generate --projects=@mirror-scan/db",
-    "db:migrate": "nx run-many -t db:migrate --projects=@mirror-scan/db",
-    "db:start": "nx run-many -t db:start --projects=@mirror-scan/db",
-    "db:watch": "nx run-many -t db:watch --projects=@mirror-scan/db",
-    "db:stop": "nx run-many -t db:stop --projects=@mirror-scan/db",
-    "db:down": "nx run-many -t db:down --projects=@mirror-scan/db"
-  },
-  "dependencies": {
-    "@mirror-scan/env": "workspace:*",
-    "dotenv": "catalog:",
-    "zod": "catalog:"
-  },
-  "devDependencies": {
-    "@mirror-scan/config": "workspace:*",
-    "@types/node": "^22.13.14",
-    "nx": "^21.5.2",
-    "typescript": "^6"
-  },
-  "packageManager": "pnpm@10.13.1"
+	"name": "mirror-scan",
+	"private": true,
+	"workspaces": [
+		"apps/*",
+		"packages/*"
+	],
+	"type": "module",
+	"scripts": {
+		"dev": "nx run-many -t dev",
+		"build": "nx run-many -t build",
+		"check-types": "nx run-many -t check-types",
+		"dev:native": "nx run-many -t dev --projects=native",
+		"dev:web": "nx run-many -t dev --projects=web",
+		"dev:server": "nx run-many -t dev --projects=server",
+		"db:push": "nx run-many -t db:push --projects=@mirror-scan/db",
+		"db:studio": "nx run-many -t db:studio --projects=@mirror-scan/db",
+		"db:generate": "nx run-many -t db:generate --projects=@mirror-scan/db",
+		"db:migrate": "nx run-many -t db:migrate --projects=@mirror-scan/db",
+		"db:start": "nx run-many -t db:start --projects=@mirror-scan/db",
+		"db:watch": "nx run-many -t db:watch --projects=@mirror-scan/db",
+		"db:stop": "nx run-many -t db:stop --projects=@mirror-scan/db",
+		"db:down": "nx run-many -t db:down --projects=@mirror-scan/db",
+		"check": "biome check --write ."
+	},
+	"dependencies": {
+		"@mirror-scan/env": "workspace:*",
+		"dotenv": "catalog:",
+		"zod": "catalog:"
+	},
+	"devDependencies": {
+		"@biomejs/biome": "^2.2.0",
+		"@mirror-scan/config": "workspace:*",
+		"@types/node": "^22.13.14",
+		"nx": "^21.5.2",
+		"typescript": "^5"
+	},
+	"packageManager": "pnpm@10.13.1"
 }

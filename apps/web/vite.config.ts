@@ -1,33 +1,19 @@
+import path from "node:path";
+
 import tailwindcss from "@tailwindcss/vite";
 import { tanstackRouter } from "@tanstack/router-plugin/vite";
 import react from "@vitejs/plugin-react";
 import { defineConfig } from "vite";
-import { VitePWA } from "vite-plugin-pwa";
 
 export default defineConfig({
-  server: {
-    port: 3001,
-  },
-  resolve: {
-    tsconfigPaths: true,
-  },
-  plugins: [
-    tailwindcss(),
-    tanstackRouter({
-      target: "react",
-      autoCodeSplitting: true,
-    }),
-    react(),
-    VitePWA({
-      registerType: "autoUpdate",
-      manifest: {
-        name: "mirror-scan",
-        short_name: "mirror-scan",
-        description: "mirror-scan - PWA Application",
-        theme_color: "#0c0c0c",
-      },
-      pwaAssets: { disabled: false, config: true },
-      devOptions: { enabled: true },
-    }),
-  ],
+	plugins: [tailwindcss(), tanstackRouter({}), react()],
+	resolve: {
+		alias: {
+			"@": path.resolve(__dirname, "./src"),
+		},
+	},
+	server: {
+		host: '0.0.0.0',
+		port: 3001,
+	},
 });

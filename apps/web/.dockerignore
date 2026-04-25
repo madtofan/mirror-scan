@@ -1,0 +1,16 @@
+# Dependencies
+node_modules
+
+# Build
+dist
+
+# Development
+.env
+.env.local
+.env.development
+
+# Logs
+*.log
+
+# Test
+coverage

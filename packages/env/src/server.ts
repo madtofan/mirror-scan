@@ -13,7 +13,7 @@ export const env = createEnv({
 			.default("development"),
 		LLM_API_KEY: z.string().min(1),
 		LLM_MODEL: z.string().default("gpt-4o"),
-		LLM_BASE_URL: z.string().url().optional(),
+		LLM_BASE_URL: z.url().optional(),
 	},
 	runtimeEnv: process.env,
 	emptyStringAsUndefined: true,

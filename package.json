@@ -32,6 +32,7 @@
 		"@biomejs/biome": "^2.2.0",
 		"@mirror-scan/config": "workspace:*",
 		"@types/node": "^22.13.14",
+		"expo": "^55.0.15",
 		"nx": "^21.5.2",
 		"typescript": "^5"
 	},

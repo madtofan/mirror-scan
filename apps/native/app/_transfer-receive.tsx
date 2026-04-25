@@ -54,7 +54,7 @@ function TransferReceive() {
         ) : (
           <CameraView
             className="flex-1"
-            facing="back"
+            facing="front"
             barcodeScannerSettings={{
               barcodeTypes: ["qr"],
             }}

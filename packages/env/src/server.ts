@@ -11,6 +11,9 @@ export const env = createEnv({
 		NODE_ENV: z
 			.enum(["development", "production", "test"])
 			.default("development"),
+		LLM_API_KEY: z.string().min(1),
+		LLM_MODEL: z.string().default("gpt-4o"),
+		LLM_BASE_URL: z.string().url().optional(),
 	},
 	runtimeEnv: process.env,
 	emptyStringAsUndefined: true,

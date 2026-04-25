@@ -10,6 +10,7 @@ import { env } from "@mirror-scan/env/server";
 import { Hono } from "hono";
 import { cors } from "hono/cors";
 import { logger } from "hono/logger";
+import { processQuery } from "./query-engine";
 
 const app = new Hono();
 
@@ -25,6 +26,28 @@ app.use(
 );
 
 app.on(["POST", "GET"], "/api/auth/*", (c) => auth.handler(c.req.raw));
+
+app.post("/chat", async (c) => {
+	const session = await auth.api.getSession({ headers: c.req.raw.headers });
+	if (!session?.user) return c.json({ error: "Unauthorized" }, 401);
+
+	const body = await c.req.json();
+	const { message, history = [] } = body;
+
+	if (!message || typeof message !== "string" || message.trim().length === 0) {
+		return c.json({ error: "message is required" }, 400);
+	}
+	if (message.length > 1000) {
+		return c.json({ error: "message must be 1000 characters or fewer" }, 400);
+	}
+
+	const response = await processQuery({
+		message,
+		history,
+		userId: session.user.id,
+	});
+	return response;
+});
 
 export const apiHandler = new OpenAPIHandler(appRouter, {
 	plugins: [

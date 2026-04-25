@@ -1,4 +1,5 @@
-import { useMemo, useState } from "react"
+import { useState } from "react"
+import { useQuery } from "@tanstack/react-query"
 import {
 	ArrowUpDown,
 	ChevronDown,
@@ -17,6 +18,7 @@ import {
 	CardHeader,
 	CardTitle,
 } from "@mirror-scan/ui/components/card"
+import { Skeleton } from "@mirror-scan/ui/components/skeleton"
 import {
 	Table,
 	TableBody,
@@ -26,61 +28,68 @@ import {
 	TableRow,
 } from "@mirror-scan/ui/components/table"
 
-import { MOCK_TRANSACTIONS, type MirrorTransaction } from "./mock-data"
+import { orpc } from "@/utils/orpc"
 
-type SortField = keyof MirrorTransaction
+type StatusFilter = "All" | "pending" | "sent" | "acknowledged" | "rejected"
 type SortDir = "asc" | "desc"
-type StatusFilter = "All" | "Synced" | "Pending"
 
 const PAGE_SIZE = 10
 
-const COLUMNS: { key: SortField; label: string }[] = [
-	{ key: "id", label: "Transaction ID" },
-	{ key: "sender", label: "Sender" },
-	{ key: "receiver", label: "Receiver" },
-	{ key: "amount", label: "Amount (RM)" },
-	{ key: "status", label: "Status" },
-	{ key: "timestamp", label: "Timestamp" },
-]
-
-function SortIcon({ field, sortField, sortDir }: { field: SortField; sortField: SortField; sortDir: SortDir }) {
-	if (sortField !== field)
-		return <ArrowUpDown className="size-3 opacity-25" />
-	return sortDir === "asc" ? (
-		<ChevronUp className="size-3 text-tng-cyan" />
-	) : (
-		<ChevronDown className="size-3 text-tng-cyan" />
-	)
+interface LedgerEntry {
+	id: string
+	userId: string
+	fromPubKey: string
+	toPubKey: string
+	amount: number
+	prevTxHash: string | null
+	sequenceNumber: number
+	status: string
+	createdAt: string
+	updatedAt: string
 }
 
-function StatusBadge({ status }: { status: MirrorTransaction["status"] }) {
-	const synced = status === "Synced"
-	return (
-		<Badge
-			variant="outline"
-			className="gap-1.5 border-tng-success/25 text-tng-success"
-			style={
-				synced
-					? {
-							borderColor: "oklch(0.67 0.17 162 / 25%)",
-							color: "var(--tng-success)",
-							background: "oklch(0.67 0.17 162 / 8%)",
-						}
-					: {
-							borderColor: "oklch(0.78 0.16 75 / 25%)",
-							color: "var(--tng-warning)",
-							background: "oklch(0.78 0.16 75 / 8%)",
-						}
+function StatusBadge({ status }: { status: string }) {
+	const synced = status === "acknowledged"
+	const sent = status === "sent"
+	const rejected = status === "rejected"
+
+	const style = synced
+		? {
+				borderColor: "oklch(0.67 0.17 162 / 25%)",
+				color: "var(--tng-success)",
+				background: "oklch(0.67 0.17 162 / 8%)",
 			}
-		>
+		: rejected
+			? {
+					borderColor: "oklch(0.65 0.22 25 / 25%)",
+					color: "oklch(0.65 0.22 25)",
+					background: "oklch(0.65 0.22 25 / 8%)",
+				}
+			: sent
+				? {
+						borderColor: "oklch(0.78 0.16 75 / 25%)",
+						color: "var(--tng-warning)",
+						background: "oklch(0.78 0.16 75 / 8%)",
+					}
+				: {
+						borderColor: "oklch(0.6 0.05 258 / 25%)",
+						color: "oklch(0.6 0.05 258)",
+						background: "oklch(0.6 0.05 258 / 8%)",
+					}
+
+	const dot = synced
+		? "var(--tng-success)"
+		: rejected
+			? "oklch(0.65 0.22 25)"
+			: sent
+				? "var(--tng-warning)"
+				: "oklch(0.6 0.05 258)"
+
+	return (
+		<Badge variant="outline" style={style} className="gap-1.5">
 			<span
 				className="inline-block size-1.5 rounded-full"
-				style={{
-					background: synced ? "var(--tng-success)" : "var(--tng-warning)",
-					boxShadow: synced
-						? "0 0 6px oklch(0.67 0.17 162 / 50%)"
-						: "0 0 6px oklch(0.78 0.16 75 / 50%)",
-				}}
+				style={{ background: dot }}
 			/>
 			{status}
 		</Badge>
@@ -97,68 +106,45 @@ function formatTimestamp(iso: string) {
 	})
 }
 
+function truncate(str: string, len = 14) {
+	return str.length > len ? `${str.slice(0, len)}…` : str
+}
+
 export function MirrorScanLedger() {
-	const [sortField, setSortField] = useState<SortField>("timestamp")
-	const [sortDir, setSortDir] = useState<SortDir>("desc")
 	const [statusFilter, setStatusFilter] = useState<StatusFilter>("All")
-	const [searchTerm, setSearchTerm] = useState("")
+	const [search, setSearch] = useState("")
+	const [searchInput, setSearchInput] = useState("")
 	const [currentPage, setCurrentPage] = useState(1)
+	const [sortDir, setSortDir] = useState<SortDir>("desc")
 
-	const processedData = useMemo(() => {
-		let data = [...MOCK_TRANSACTIONS]
-
-		if (statusFilter !== "All") {
-			data = data.filter((t) => t.status === statusFilter)
-		}
-
-		if (searchTerm) {
-			const q = searchTerm.toLowerCase()
-			data = data.filter(
-				(t) =>
-					t.id.toLowerCase().includes(q) ||
-					t.sender.toLowerCase().includes(q) ||
-					t.receiver.toLowerCase().includes(q),
-			)
-		}
-
-		data.sort((a, b) => {
-			let av: string | number = a[sortField]
-			let bv: string | number = b[sortField]
-
-			if (sortField === "amount") {
-				av = Number(av)
-				bv = Number(bv)
-			}
-			if (sortField === "timestamp") {
-				av = new Date(av as string).getTime()
-				bv = new Date(bv as string).getTime()
-			}
-			if (typeof av === "string" && typeof bv === "string") {
-				return sortDir === "asc"
-					? av.localeCompare(bv)
-					: bv.localeCompare(av)
-			}
-			return sortDir === "asc"
-				? (av as number) - (bv as number)
-				: (bv as number) - (av as number)
-		})
-
-		return data
-	}, [statusFilter, searchTerm, sortField, sortDir])
-
-	const totalPages = Math.ceil(processedData.length / PAGE_SIZE)
-	const pageData = processedData.slice(
-		(currentPage - 1) * PAGE_SIZE,
-		currentPage * PAGE_SIZE,
+	const { data, isLoading } = useQuery(
+		orpc.getLedgerEntries.queryOptions({
+			input: {
+				page: currentPage,
+				pageSize: PAGE_SIZE,
+				status: statusFilter,
+				search: search || undefined,
+			},
+			refetchInterval: 30_000,
+		}),
 	)
 
-	function handleSort(field: SortField) {
-		if (sortField === field) {
-			setSortDir((d) => (d === "asc" ? "desc" : "asc"))
-		} else {
-			setSortField(field)
-			setSortDir("asc")
-		}
+	const entries: LedgerEntry[] = data?.entries ?? []
+	const total = data?.total ?? 0
+	const totalPages = Math.max(1, Math.ceil(total / PAGE_SIZE))
+
+	function handleSearch() {
+		setSearch(searchInput)
+		setCurrentPage(1)
+	}
+
+	function handleStatusFilter(s: StatusFilter) {
+		setStatusFilter(s)
+		setCurrentPage(1)
+	}
+
+	function toggleSort() {
+		setSortDir((d) => (d === "asc" ? "desc" : "asc"))
 		setCurrentPage(1)
 	}
 
@@ -170,71 +156,80 @@ export function MirrorScanLedger() {
 					<Database className="size-4 text-tng-cyan" />
 					<CardTitle>Mirror Scan Ledger</CardTitle>
 					<span className="rounded-sm bg-tng-cyan/10 px-2 py-0.5 text-xs font-medium text-tng-cyan">
-						{processedData.length} records
+						{total} records
 					</span>
 				</div>
 				<div className="flex items-center gap-2">
 					{/* Search */}
-					<div className="relative">
+					<div className="relative flex items-center gap-1">
 						<Search className="pointer-events-none absolute top-1/2 left-2 size-3.5 -translate-y-1/2 text-muted-foreground" />
 						<input
 							type="text"
-							value={searchTerm}
-							onChange={(e) => {
-								setSearchTerm(e.target.value)
-								setCurrentPage(1)
-							}}
-							placeholder="Search..."
-							className="h-7 w-40 rounded-md border border-border bg-transparent pr-2 pl-7 text-xs text-foreground outline-none placeholder:text-muted-foreground focus:border-tng-cyan/30"
+							value={searchInput}
+							onChange={(e) => setSearchInput(e.target.value)}
+							onKeyDown={(e) => e.key === "Enter" && handleSearch()}
+							placeholder="Search ID / pubkey..."
+							className="h-7 w-44 rounded-md border border-border bg-transparent pr-2 pl-7 text-xs text-foreground outline-none placeholder:text-muted-foreground focus:border-tng-cyan/30"
 						/>
 					</div>
 					{/* Status filters */}
-					{(["All", "Synced", "Pending"] as const).map((s) => (
-						<Button
-							key={s}
-							size="xs"
-							variant={statusFilter === s ? "default" : "outline"}
-							onClick={() => {
-								setStatusFilter(s)
-								setCurrentPage(1)
-							}}
-							className={
-								statusFilter === s
-									? "bg-gradient-to-r from-tng-blue to-tng-cyan text-white border-0"
-									: ""
-							}
-						>
-							{s}
-						</Button>
-					))}
+					{(["All", "sent", "acknowledged", "pending", "rejected"] as const).map(
+						(s) => (
+							<Button
+								key={s}
+								size="xs"
+								variant={statusFilter === s ? "default" : "outline"}
+								onClick={() => handleStatusFilter(s)}
+								className={
+									statusFilter === s
+										? "bg-gradient-to-r from-tng-blue to-tng-cyan text-white border-0"
+										: ""
+								}
+							>
+								{s === "All" ? "All" : s}
+							</Button>
+						),
+					)}
 				</div>
 			</CardHeader>
 
 			<CardContent className="p-0">
-				{/* Table */}
 				<Table>
 					<TableHeader>
 						<TableRow>
-							{COLUMNS.map((col) => (
-								<TableHead
-									key={col.key}
-									className="cursor-pointer select-none bg-card/80"
-									onClick={() => handleSort(col.key)}
-								>
-									<div className="flex items-center gap-1.5">
-										{col.label}
-										<SortIcon
-											field={col.key}
-											sortField={sortField}
-											sortDir={sortDir}
-										/>
-									</div>
-								</TableHead>
-							))}
+							<TableHead>ID</TableHead>
+							<TableHead>From</TableHead>
+							<TableHead>To</TableHead>
+							<TableHead>Amount (RM)</TableHead>
+							<TableHead>Status</TableHead>
+							<TableHead
+								className="cursor-pointer select-none"
+								onClick={toggleSort}
+							>
+								<div className="flex items-center gap-1.5">
+									Timestamp
+									{sortDir === "asc" ? (
+										<ChevronUp className="size-3 text-tng-cyan" />
+									) : (
+										<ChevronDown className="size-3 text-tng-cyan" />
+									)}
+									<ArrowUpDown className="size-3 opacity-25" />
+								</div>
+							</TableHead>
 						</TableRow>
 					</TableHeader>
 					<TableBody>
-						{pageData.length === 0 ? (
+						{isLoading ? (
+							Array.from({ length: PAGE_SIZE }).map((_, i) => (
+								<TableRow key={i}>
+									{Array.from({ length: 6 }).map((_, j) => (
+										<TableCell key={j}>
+											<Skeleton className="h-4 w-full" />
+										</TableCell>
+									))}
+								</TableRow>
+							))
+						) : entries.length === 0 ? (
 							<TableRow>
 								<TableCell
 									colSpan={6}
@@ -244,28 +239,27 @@ export function MirrorScanLedger() {
 								</TableCell>
 							</TableRow>
 						) : (
-							pageData.map((tx) => (
-								<TableRow key={tx.id} className="hover:bg-tng-cyan/5">
+							entries.map((entry) => (
+								<TableRow key={entry.id} className="hover:bg-tng-cyan/5">
 									<TableCell className="font-mono text-xs text-tng-cyan">
-										{tx.id}
+										{truncate(entry.id, 16)}
 									</TableCell>
-									<TableCell>{tx.sender}</TableCell>
-									<TableCell>
-										<div>{tx.receiver}</div>
-										<div className="text-xs text-muted-foreground/60">
-											{tx.location}
-										</div>
+									<TableCell className="font-mono text-xs">
+										{truncate(entry.fromPubKey)}
+									</TableCell>
+									<TableCell className="font-mono text-xs">
+										{truncate(entry.toPubKey)}
 									</TableCell>
 									<TableCell className="font-semibold">
-										{tx.amount.toLocaleString("en-MY", {
+										{(entry.amount / 100).toLocaleString("en-MY", {
 											minimumFractionDigits: 2,
 										})}
 									</TableCell>
 									<TableCell>
-										<StatusBadge status={tx.status} />
+										<StatusBadge status={entry.status} />
 									</TableCell>
 									<TableCell className="text-muted-foreground">
-										{formatTimestamp(tx.timestamp)}
+										{formatTimestamp(entry.updatedAt)}
 									</TableCell>
 								</TableRow>
 							))
@@ -277,12 +271,9 @@ export function MirrorScanLedger() {
 				<div className="flex items-center justify-between border-t px-4 py-3">
 					<span className="text-xs text-muted-foreground">
 						Showing{" "}
-						{processedData.length > 0
-							? (currentPage - 1) * PAGE_SIZE + 1
-							: 0}
+						{total > 0 ? (currentPage - 1) * PAGE_SIZE + 1 : 0}
 						&ndash;
-						{Math.min(currentPage * PAGE_SIZE, processedData.length)} of{" "}
-						{processedData.length}
+						{Math.min(currentPage * PAGE_SIZE, total)} of {total}
 					</span>
 					<div className="flex items-center gap-1">
 						<Button
@@ -293,7 +284,7 @@ export function MirrorScanLedger() {
 						>
 							<ChevronLeft className="size-3.5" />
 						</Button>
-						{Array.from({ length: totalPages }, (_, i) => i + 1).map(
+						{Array.from({ length: Math.min(totalPages, 7) }, (_, i) => i + 1).map(
 							(p) => (
 								<button
 									key={p}

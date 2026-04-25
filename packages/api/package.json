@@ -11,14 +11,15 @@
 	},
 	"scripts": {},
 	"dependencies": {
+		"@mirror-scan/auth": "workspace:*",
+		"@mirror-scan/db": "workspace:*",
+		"@mirror-scan/env": "workspace:*",
 		"@orpc/client": "catalog:",
 		"@orpc/openapi": "catalog:",
 		"@orpc/server": "catalog:",
 		"@orpc/zod": "catalog:",
-		"@mirror-scan/auth": "workspace:*",
-		"@mirror-scan/db": "workspace:*",
-		"@mirror-scan/env": "workspace:*",
 		"dotenv": "catalog:",
+		"drizzle-orm": "^0.45.2",
 		"zod": "catalog:"
 	},
 	"devDependencies": {

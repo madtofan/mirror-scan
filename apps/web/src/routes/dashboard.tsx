@@ -7,10 +7,7 @@ import { AICommandBar } from "@/components/dashboard/ai-command-bar"
 import { AIInsightPanel } from "@/components/dashboard/ai-insight-panel"
 import { KPICards } from "@/components/dashboard/kpi-cards"
 import { MirrorScanLedger } from "@/components/dashboard/mirror-scan-ledger"
-import {
-	resolveAIQuery,
-	type AIQueryResult,
-} from "@/components/dashboard/mock-data"
+import { resolveAIQuery, type AIQueryResult } from "@/components/dashboard/mock-data"
 
 export const Route = createFileRoute("/dashboard")({
 	component: RouteComponent,

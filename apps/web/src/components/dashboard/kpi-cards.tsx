@@ -1,12 +1,14 @@
 import type { LucideIcon } from "lucide-react"
 import { Activity, CheckCircle2, MapPin, TrendingUp } from "lucide-react"
+import { useQuery } from "@tanstack/react-query"
 
 import {
 	Card,
 	CardContent,
 	CardHeader,
 } from "@mirror-scan/ui/components/card"
-import { MOCK_KPI } from "./mock-data"
+import { Skeleton } from "@mirror-scan/ui/components/skeleton"
+import { orpc } from "@/utils/orpc"
 
 interface KPIItemProps {
 	icon: LucideIcon
@@ -39,28 +41,57 @@ function KPIItem({ icon: Icon, label, value, subtext, accentClass }: KPIItemProp
 	)
 }
 
+function KPISkeleton() {
+	return (
+		<Card className="glass flex-1">
+			<CardHeader className="pb-1">
+				<Skeleton className="h-9 w-9 rounded-lg" />
+			</CardHeader>
+			<CardContent className="space-y-2">
+				<Skeleton className="h-8 w-24" />
+				<Skeleton className="h-4 w-32" />
+				<Skeleton className="h-3 w-40" />
+			</CardContent>
+		</Card>
+	)
+}
+
 export function KPICards() {
+	const { data, isLoading } = useQuery(
+		orpc.getDashboardKpi.queryOptions({ refetchInterval: 30_000 }),
+	)
+
+	if (isLoading || !data) {
+		return (
+			<div className="grid grid-cols-1 gap-4 md:grid-cols-3">
+				<KPISkeleton />
+				<KPISkeleton />
+				<KPISkeleton />
+			</div>
+		)
+	}
+
 	return (
 		<div className="grid grid-cols-1 gap-4 md:grid-cols-3">
 			<KPIItem
 				icon={Activity}
 				label="Total Handshake Volume"
-				value={`RM ${MOCK_KPI.totalVolume.toLocaleString("en-MY", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`}
-				subtext="Total RM processed offline (72h window)"
+				value={`RM ${(data.totalVolume / 100).toLocaleString("en-MY", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`}
+				subtext="Total RM processed offline"
 				accentClass="tng-cyan"
 			/>
 			<KPIItem
 				icon={CheckCircle2}
 				label="Sync Success Rate"
-				value={`${MOCK_KPI.syncRate}%`}
-				subtext="Offline tokens synced to Alibaba RDS"
+				value={`${data.syncRate}%`}
+				subtext="Offline tokens synced to server"
 				accentClass="tng-success"
 			/>
 			<KPIItem
 				icon={MapPin}
 				label="Active Heartlands"
-				value={MOCK_KPI.activeHeartlands}
-				subtext="Unique merchant locations using Mirror Scan"
+				value={data.activeHeartlands}
+				subtext="Unique sender nodes in ledger"
 				accentClass="tng-blue"
 			/>
 		</div>

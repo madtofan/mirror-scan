@@ -1,0 +1,25 @@
+{
+  "name": "@mirror-scan/auth",
+  "type": "module",
+  "exports": {
+    ".": {
+      "default": "./src/index.ts"
+    },
+    "./*": {
+      "default": "./src/*.ts"
+    }
+  },
+  "scripts": {},
+  "dependencies": {
+    "@better-auth/expo": "catalog:",
+    "@mirror-scan/db": "workspace:*",
+    "@mirror-scan/env": "workspace:*",
+    "better-auth": "catalog:",
+    "dotenv": "catalog:",
+    "zod": "catalog:"
+  },
+  "devDependencies": {
+    "@mirror-scan/config": "workspace:*",
+    "typescript": "^6"
+  }
+}

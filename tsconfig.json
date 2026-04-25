@@ -1,0 +1,3 @@
+{
+  "extends": "@mirror-scan/config/tsconfig.base.json"
+}

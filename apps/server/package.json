@@ -1,0 +1,36 @@
+{
+  "name": "server",
+  "type": "module",
+  "main": "src/index.ts",
+  "scripts": {
+    "build": "tsdown",
+    "check-types": "tsc -b",
+    "compile": "bun build --compile --minify --sourcemap --bytecode ./src/index.ts --outfile server",
+    "dev": "tsx watch src/index.ts",
+    "start": "node dist/index.mjs"
+  },
+  "dependencies": {
+    "@ai-sdk/devtools": "^0.0.2",
+    "@ai-sdk/google": "^3.0.1",
+    "@hono/node-server": "^1.14.4",
+    "@mirror-scan/api": "workspace:*",
+    "@mirror-scan/auth": "workspace:*",
+    "@mirror-scan/db": "workspace:*",
+    "@mirror-scan/env": "workspace:*",
+    "@orpc/openapi": "catalog:",
+    "@orpc/server": "catalog:",
+    "@orpc/zod": "catalog:",
+    "ai": "catalog:",
+    "better-auth": "catalog:",
+    "dotenv": "catalog:",
+    "hono": "catalog:",
+    "zod": "catalog:"
+  },
+  "devDependencies": {
+    "@mirror-scan/config": "workspace:*",
+    "@types/node": "^22.13.14",
+    "tsdown": "^0.21.9",
+    "tsx": "^4.19.2",
+    "typescript": "^6"
+  }
+}

@@ -1,0 +1,17 @@
+{
+  "expo": {
+    "scheme": "mirror-scan",
+    "userInterfaceStyle": "automatic",
+    "orientation": "default",
+    "web": {
+      "bundler": "metro"
+    },
+    "name": "mirror-scan",
+    "slug": "mirror-scan",
+    "plugins": ["expo-font"],
+    "experiments": {
+      "typedRoutes": true,
+      "reactCompiler": true
+    }
+  }
+}

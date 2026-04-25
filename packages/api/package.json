@@ -1,0 +1,29 @@
+{
+  "name": "@mirror-scan/api",
+  "type": "module",
+  "exports": {
+    ".": {
+      "default": "./src/index.ts"
+    },
+    "./*": {
+      "default": "./src/*.ts"
+    }
+  },
+  "scripts": {},
+  "dependencies": {
+    "@mirror-scan/auth": "workspace:*",
+    "@mirror-scan/db": "workspace:*",
+    "@mirror-scan/env": "workspace:*",
+    "@orpc/client": "catalog:",
+    "@orpc/openapi": "catalog:",
+    "@orpc/server": "catalog:",
+    "@orpc/zod": "catalog:",
+    "dotenv": "catalog:",
+    "zod": "catalog:"
+  },
+  "devDependencies": {
+    "@mirror-scan/config": "workspace:*",
+    "hono": "catalog:",
+    "typescript": "^6"
+  }
+}

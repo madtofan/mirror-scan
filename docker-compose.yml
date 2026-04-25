@@ -19,36 +19,36 @@ services:
       timeout: 5s
       retries: 5
 
-  server:
-    build:
-      context: .
-      dockerfile: apps/server/Dockerfile
-    container_name: mirror-scan-server
-    restart: unless-stopped
-    ports:
-      - "3000:3000"
-    environment:
-      DATABASE_URL: postgresql://postgres:password@db:5432/mirror-scan
-      BETTER_AUTH_URL: http://server:3000
-      CORS_ORIGIN: http://localhost:80
-      NODE_ENV: production
-    depends_on:
-      db:
-        condition: service_healthy
-
-  web:
-    build:
-      context: .
-      dockerfile: apps/web/Dockerfile
-    container_name: mirror-scan-web
-    restart: unless-stopped
-    ports:
-      - "5173:5173"
-    environment:
-      VITE_SERVER_URL: http://server:3000
-    depends_on:
-      server:
-        condition: service_started
+  # server:
+  #   build:
+  #     context: .
+  #     dockerfile: apps/server/Dockerfile
+  #   container_name: mirror-scan-server
+  #   restart: unless-stopped
+  #   ports:
+  #     - "3000:3000"
+  #   environment:
+  #     DATABASE_URL: postgresql://postgres:password@db:5432/mirror-scan
+  #     BETTER_AUTH_URL: http://server:3000
+  #     CORS_ORIGIN: http://localhost:80
+  #     NODE_ENV: production
+  #   depends_on:
+  #     db:
+  #       condition: service_healthy
+  #
+  # web:
+  #   build:
+  #     context: .
+  #     dockerfile: apps/web/Dockerfile
+  #   container_name: mirror-scan-web
+  #   restart: unless-stopped
+  #   ports:
+  #     - "5173:5173"
+  #   environment:
+  #     VITE_SERVER_URL: http://server:3000
+  #   depends_on:
+  #     server:
+  #       condition: service_started
 
 volumes:
   mirror-scan_postgres_data:

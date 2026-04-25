@@ -1,4 +1,4 @@
-import { useEffect, useState, useCallback } from "react";
+import { useEffect, useState, useCallback, useRef } from "react";
 import { authClient } from "@/lib/auth-client";
 import {
 	saveSession,
@@ -6,17 +6,21 @@ import {
 	clearStoredSession,
 	type SessionAndUser,
 } from "@/lib/session-storage";
+import { pull } from "./sync";
 
 type UseOfflineSessionResult = {
 	session: SessionAndUser | null;
 	isPending: boolean;
 	isOffline: boolean;
 	refresh: () => Promise<void>;
+	lastPulled: Date | null;
 };
 
 export function useOfflineSession(): UseOfflineSessionResult {
 	const [cachedSession, setCachedSession] = useState<SessionAndUser | null>(null);
 	const [isOffline, setIsOffline] = useState(false);
+	const [lastPulled, setLastPulled] = useState<Date | null>(null);
+	const hasPulledRef = useRef(false);
 
 	const { data: serverSession, isPending, error, refetch } = authClient.useSession();
 
@@ -46,6 +50,15 @@ export function useOfflineSession(): UseOfflineSessionResult {
 			saveSession(sessionToSave);
 			setCachedSession(sessionToSave);
 			setIsOffline(false);
+
+			if (!hasPulledRef.current) {
+				hasPulledRef.current = true;
+				pull()
+					.then(() => {
+						setLastPulled(new Date());
+					})
+					.catch(console.error);
+			}
 		} else if (!isPending) {
 			if (error) {
 				getStoredSession().then((cached) => {
@@ -69,5 +82,6 @@ export function useOfflineSession(): UseOfflineSessionResult {
 		isPending,
 		isOffline,
 		refresh,
+		lastPulled,
 	};
 }

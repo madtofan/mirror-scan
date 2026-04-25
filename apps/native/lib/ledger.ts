@@ -1,4 +1,5 @@
 import type { SQLiteDatabase } from "expo-sqlite";
+import { pushEntry } from "./sync";
 
 const LEDGER_TABLE_SQL = `
 CREATE TABLE IF NOT EXISTS ledger (
@@ -95,6 +96,24 @@ export async function addTransaction(
 			tx.status,
 		],
 	);
+
+	try {
+		await pushEntry(
+			{
+				id: tx.id,
+				fromPubKey: tx.from_pub_key,
+				toPubKey: tx.to_pub_key,
+				amount: tx.amount,
+				prevTxHash: tx.prev_tx_hash,
+				sequenceNumber: tx.sequence_number,
+				signature: tx.signature,
+				status: tx.status,
+			},
+			db,
+		);
+	} catch (error) {
+		console.error("Failed to push transaction, will retry when online:", error);
+	}
 }
 
 export async function updateTransactionStatus(

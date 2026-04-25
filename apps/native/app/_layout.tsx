@@ -10,10 +10,30 @@ import { AppThemeProvider } from "@/contexts/app-theme-context";
 import { useOfflineSession } from "@/lib/use-offline-session";
 import { migrateDbIfNeeded } from "@/lib/ledger";
 import { queryClient } from "@/utils/orpc";
+import { useOnNetworkReady, getPendingPushFlag } from "@/lib/network";
+import { retryPendingPush } from "@/lib/sync";
 
 export const unstable_settings = {
 	initialRouteName: "(drawer)",
 };
+
+function SyncRetryHandler() {
+	const { session } = useOfflineSession();
+
+	useOnNetworkReady(async () => {
+		if (!session) return;
+		const hasPending = await getPendingPushFlag();
+		if (hasPending) {
+			try {
+				await retryPendingPush();
+			} catch (error) {
+				console.error("Failed to retry pending push:", error);
+			}
+		}
+	});
+
+	return null;
+}
 
 function StackLayout() {
 	const { session } = useOfflineSession();
@@ -49,6 +69,7 @@ export default function Layout() {
 						<AppThemeProvider>
 							<HeroUINativeProvider>
 								<SplashScreenController />
+								<SyncRetryHandler />
 								<StackLayout />
 							</HeroUINativeProvider>
 						</AppThemeProvider>

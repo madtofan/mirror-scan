@@ -80,10 +80,16 @@ function errorToSseResponse(errorMessage: string): Response {
 
 function toDataStreamResponse(
 	stream: ReturnType<typeof streamText>,
+	sql?: string,
 ): Response {
 	const encoder = new TextEncoder();
 	const readable = new ReadableStream({
 		async start(controller) {
+			if (sql) {
+				controller.enqueue(
+					encoder.encode(`data: ${JSON.stringify({ type: "sql", content: sql })}\n\n`),
+				);
+			}
 			for await (const chunk of stream.textStream) {
 				const data = JSON.stringify({ type: "text", content: chunk });
 				controller.enqueue(encoder.encode(`data: ${data}\n\n`));
@@ -131,6 +137,7 @@ export async function processQuery(
 		});
 
 		sqlStr = result.text.trim();
+		console.log({ sqlStr });
 	} catch (err) {
 		console.error("[query-engine] LLM Call 1 (SQL generation) failed:", err);
 		return errorToSseResponse(
@@ -191,7 +198,7 @@ Do not expose raw SQL or internal field names unnecessarily.`;
 			messages: [{ role: "user", content: answerPrompt }],
 		});
 
-		return toDataStreamResponse(result);
+		return toDataStreamResponse(result, sqlStr);
 	} catch (err) {
 		console.error("[query-engine] LLM Call 2 (answer generation) failed:", err);
 		return errorToSseResponse(

@@ -20,7 +20,7 @@ function TransferPage() {
 					>
 						<Ionicons name="close" size={28} color="#9CA3AF" />
 					</TouchableOpacity>
-					<Text className="font-bold text-xl text-foreground">Transfer</Text>
+					<Text className="font-bold text-xl text-foreground">Mirror Pay</Text>
 					<View className="w-10" />
 				</View>
 

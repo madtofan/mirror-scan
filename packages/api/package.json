@@ -11,6 +11,7 @@
 	},
 	"scripts": {},
 	"dependencies": {
+		"@ai-sdk/openai": "catalog:",
 		"@mirror-scan/auth": "workspace:*",
 		"@mirror-scan/db": "workspace:*",
 		"@mirror-scan/env": "workspace:*",
@@ -18,6 +19,7 @@
 		"@orpc/openapi": "catalog:",
 		"@orpc/server": "catalog:",
 		"@orpc/zod": "catalog:",
+		"ai": "catalog:",
 		"dotenv": "catalog:",
 		"drizzle-orm": "^0.45.2",
 		"zod": "catalog:"

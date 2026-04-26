@@ -2,12 +2,13 @@ import { useCallback, useState } from "react"
 import { createFileRoute, redirect } from "@tanstack/react-router"
 
 import { authClient } from "@/lib/auth-client"
+import { runAiQuery } from "@/utils/orpc"
 
 import { AICommandBar } from "@/components/dashboard/ai-command-bar"
 import { AIInsightPanel } from "@/components/dashboard/ai-insight-panel"
 import { KPICards } from "@/components/dashboard/kpi-cards"
 import { MirrorScanLedger } from "@/components/dashboard/mirror-scan-ledger"
-import { resolveAIQuery, type AIQueryResult } from "@/components/dashboard/mock-data"
+import type { AIQueryResult } from "@/components/dashboard/mock-data"
 
 export const Route = createFileRoute("/dashboard")({
 	component: RouteComponent,
@@ -34,18 +35,28 @@ function RouteComponent() {
 	const [aiLoading, setAiLoading] = useState(false)
 
 	const handleAiSubmit = useCallback(
-		(query: string) => {
+		async (query: string) => {
 			setAiLoading(true)
 			setAiPanelOpen(true)
 			setAiResult(null)
 
-			// Simulates: orpc.ai.queryData.mutate({ prompt: query })
-			// In production, replace with actual oRPC call to Qwen 3.6-Plus
-			setTimeout(() => {
-				const mock = resolveAIQuery(query)
-				setAiResult({ ...mock, query })
+			try {
+				const result = await runAiQuery(query)
+				setAiResult({ ...result, query })
+			} catch (err) {
+				console.error("AI query failed:", err)
+				setAiResult({
+					query,
+					sql: "-- Error: AI query failed",
+					explanation: "Failed to process your query. Please try again.",
+					vizType: "bar",
+					dataKey: "value",
+					xKey: "label",
+					data: [{ label: "Error", value: 0 }],
+				})
+			} finally {
 				setAiLoading(false)
-			}, 1800)
+			}
 		},
 		[],
 	)

@@ -66,7 +66,7 @@ function TransferReceive() {
       await sleep(1000);
       Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
       router.replace(
-        `/transaction-success?type=send&amount=${info.amount_sent}&timestamp=${Date.now()}`
+        `/transaction-success?type=send&amount=${info.amount_sent}&timestamp=${Date.now()}&type=received`
       );
     }
 

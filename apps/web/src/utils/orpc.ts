@@ -32,3 +32,27 @@ export const link = new RPCLink({
 export const client: AppRouterClient = createORPCClient(link);
 
 export const orpc = createTanstackQueryUtils(client);
+
+export interface AiQueryResult {
+	sql: string;
+	explanation: string;
+	vizType: "area" | "bar";
+	dataKey: string;
+	xKey: string;
+	data: Record<string, number | string>[];
+}
+
+export async function runAiQuery(prompt: string): Promise<AiQueryResult> {
+	const response = await fetch(`${env.VITE_SERVER_URL}/ai/query`, {
+		method: "POST",
+		headers: { "Content-Type": "application/json" },
+		credentials: "include",
+		body: JSON.stringify({ prompt }),
+	});
+
+	if (!response.ok) {
+		throw new Error(`AI query failed: ${response.statusText}`);
+	}
+
+	return response.json();
+}

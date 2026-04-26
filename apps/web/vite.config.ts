@@ -13,6 +13,7 @@ export default defineConfig({
 		},
 	},
 	server: {
+		allowedHosts: ['ahmads-macbook-air.local'],
 		host: '0.0.0.0',
 		port: 3001,
 	},

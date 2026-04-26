@@ -24,25 +24,6 @@ function TransferSend() {
   const { session } = useOfflineSession();
   const db = useSQLiteContext();
 
-  // const qrData = useMemo(() => {
-  //   const status: ReceiveSecond = JSON.parse(lastScannedData || "{}");
-  //   if (status.message === 'success') {
-  //     const message: ReceiveSecond = {
-  //       message: 'success',
-  //     };
-  //     return JSON.stringify(message);
-  //   }
-  //
-  //   const receiverId: ReceiveFirst = JSON.parse(lastScannedData || "{}");
-  //   if (!receiverId.userId) {
-  //     return '{"message": ""}';
-  //   }
-  //
-  //   return JSON.stringify(
-  //     generateSendPayload(receiverId.userId)
-  //   );
-  // }, [sequence]);
-
   const generateSendPayload = useCallback((receiverId: string): SendFirst => {
     return {
       sender: session?.user.id ?? '',
@@ -214,6 +195,9 @@ function TransferSend() {
       <View className="mt-6 w-full rounded-xl p-4 bg-default">
         <Text className="mb-3 text-muted text-sm">Amount</Text>
         <View className="flex-row items-center gap-3">
+          <View className="rounded-lg bg-accent px-4 py-3">
+            <Text className="text-foreground font-bold text-lg">RM</Text>
+          </View>
           <View className="flex-1 rounded-lg border border-border bg-input p-3">
             <TextInput
               className="text-foreground text-lg"
@@ -223,9 +207,6 @@ function TransferSend() {
               value={amount}
               onChangeText={setAmount}
             />
-          </View>
-          <View className="rounded-lg bg-accent px-4 py-3">
-            <Text className="text-foreground font-bold text-lg">USD</Text>
           </View>
         </View>
       </View>

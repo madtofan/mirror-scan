@@ -17,7 +17,7 @@ function TransactionSuccessPage() {
   const [isSyncing, setIsSyncing] = useState(true);
 
   const isSend = type === "send";
-  const displayAmount = amount ? `$${amount}` : "$0.00";
+  const displayAmount = amount ? `RM ${amount}` : "RM 0.00";
 
   const formatTimestamp = (ts: string) => {
     const date = new Date(parseInt(ts, 10));

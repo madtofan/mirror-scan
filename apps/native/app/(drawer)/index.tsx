@@ -51,7 +51,7 @@ function WalletPage() {
 							Your Balance
 						</Text>
 						<Text className="text-center font-bold text-5xl text-foreground">
-							${(balance / 100).toFixed(2)}
+							RM {(balance / 100).toFixed(2)}
 						</Text>
 					</View>
 
@@ -90,7 +90,7 @@ function WalletPage() {
 						style={{ shadowColor: "#000", shadowOffset: { width: 0, height: 4 }, shadowOpacity: 0.3, shadowRadius: 8, elevation: 8 }}
 					>
 						<Ionicons name="add" size={24} color={foregroundColor} />
-						<Text className="font-semibold text-lg text-foreground">Top Up $50</Text>
+						<Text className="font-semibold text-lg text-foreground">Top Up RM50</Text>
 					</TouchableOpacity>
 					<TouchableOpacity
 						onPress={navigateToTransfer}
@@ -98,7 +98,7 @@ function WalletPage() {
 						style={{ shadowColor: "#000", shadowOffset: { width: 0, height: 4 }, shadowOpacity: 0.3, shadowRadius: 8, elevation: 8 }}
 					>
 						<Ionicons name="swap-horizontal" size={24} color={foregroundColor} />
-						<Text className="font-semibold text-lg text-foreground">Transfer</Text>
+						<Text className="font-semibold text-lg text-foreground">Mirror Pay</Text>
 					</TouchableOpacity>
 				</View>
 			</View>

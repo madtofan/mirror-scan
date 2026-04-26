@@ -5,6 +5,7 @@ import { z } from "zod";
 import { db, ledger, wallet, walletKey } from "@mirror-scan/db";
 
 import { protectedProcedure, publicProcedure } from "../index";
+import { runAiQuery } from "./query-engine";
 
 // ── Shared serialisers ────────────────────────────────────────────────────────
 
@@ -420,7 +421,45 @@ export const appRouter = {
 				return { entry: serialiseLedger(inserted!) };
 			}),
 	},
+
+	// ── AI: Natural language to SQL query ───────────────────────────────────
+	ai: {
+		queryData: protectedProcedure
+			.input(
+				z.object({
+					prompt: z.string().min(1).max(1000),
+				}),
+			)
+			.handler(async ({ input, context }) => {
+				const userId = context.session.user.id;
+				const { prompt } = input;
+
+				const apiKey = process.env.LLM_API_KEY;
+				if (!apiKey) {
+					throw new ORPCError("INTERNAL_SERVER_ERROR", {
+						message: "AI service is not configured.",
+					});
+				}
+
+				try {
+					const result = await runAiQuery({
+						message: prompt,
+						history: [],
+						userId,
+						llmApiKey: apiKey,
+						llmBaseUrl: process.env.LLM_BASE_URL,
+						llmModel: process.env.LLM_MODEL,
+						db,
+					});
+					return result;
+				} catch (err) {
+					const message = err instanceof Error ? err.message : "AI query failed";
+					throw new ORPCError("INTERNAL_SERVER_ERROR", { message });
+				}
+			}),
+	},
 };
 
 export type AppRouter = typeof appRouter;
 export type AppRouterClient = RouterClient<typeof appRouter>;
+export { runAiQuery };

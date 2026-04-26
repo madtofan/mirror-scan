@@ -4,13 +4,14 @@ import { onError } from "@orpc/server";
 import { RPCHandler } from "@orpc/server/fetch";
 import { ZodToJsonSchemaConverter } from "@orpc/zod/zod4";
 import { createContext } from "@mirror-scan/api/context";
-import { appRouter } from "@mirror-scan/api/routers/index";
+import { appRouter, runAiQuery } from "@mirror-scan/api/routers/index";
 import { auth } from "@mirror-scan/auth";
 import { env } from "@mirror-scan/env/server";
 import { Hono } from "hono";
 import { cors } from "hono/cors";
 import { logger } from "hono/logger";
 import { processQuery } from "./query-engine";
+import { db } from "@mirror-scan/db";
 
 const app = new Hono();
 
@@ -47,6 +48,37 @@ app.post("/chat", async (c) => {
 		userId: session.user.id,
 	});
 	return response;
+});
+
+app.post("/ai/query", async (c) => {
+	const session = await auth.api.getSession({ headers: c.req.raw.headers });
+	if (!session?.user) return c.json({ error: "Unauthorized" }, 401);
+
+	const body = await c.req.json();
+	const { prompt } = body;
+
+	if (!prompt || typeof prompt !== "string" || prompt.trim().length === 0) {
+		return c.json({ error: "prompt is required" }, 400);
+	}
+	if (prompt.length > 1000) {
+		return c.json({ error: "prompt must be 1000 characters or fewer" }, 400);
+	}
+
+	try {
+		const result = await runAiQuery({
+			message: prompt,
+			history: [],
+			userId: session.user.id,
+			llmApiKey: env.LLM_API_KEY!,
+			llmBaseUrl: env.LLM_BASE_URL,
+			llmModel: env.LLM_MODEL,
+			db,
+		});
+		return c.json(result);
+	} catch (err) {
+		const message = err instanceof Error ? err.message : "AI query failed";
+		return c.json({ error: message }, 500);
+	}
 });
 
 export const apiHandler = new OpenAPIHandler(appRouter, {
